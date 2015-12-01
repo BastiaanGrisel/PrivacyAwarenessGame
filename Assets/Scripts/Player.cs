@@ -11,6 +11,9 @@ public class Player : MonoBehaviour
     private Vector3 syncStartPosition = Vector3.zero;
     private Vector3 syncEndPosition = Vector3.zero;
 
+    private Vector3 forward;
+    private Vector3 right;
+
     void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
     {
         Vector3 syncPosition = Vector3.zero;
@@ -37,6 +40,11 @@ public class Player : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        forward = Vector3.forward;
+        right = Vector3.right;
+    }
     void Awake()
     {
         lastSynchronizationTime = Time.time;
@@ -48,6 +56,7 @@ public class Player : MonoBehaviour
         {
             InputMovement();
             InputColorChange();
+            Camera.main.GetComponent<SmoothFollow>().target = GetComponent<NetworkView>().transform;
         }
         else
         {
@@ -59,16 +68,16 @@ public class Player : MonoBehaviour
     private void InputMovement()
     {
         if (Input.GetKey(KeyCode.W))
-            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position + Vector3.forward * speed * Time.deltaTime);
+            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position + transform.forward * speed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.S))
-            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position - Vector3.forward * speed * Time.deltaTime);
+            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position - transform.forward * speed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.D))
-            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position + Vector3.right * speed * Time.deltaTime);
+            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position + transform.right * speed * Time.deltaTime);
 
         if (Input.GetKey(KeyCode.A))
-            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position - Vector3.right * speed * Time.deltaTime);
+            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position - transform.right * speed * Time.deltaTime);
     }
 
     private void SyncedMovement()
