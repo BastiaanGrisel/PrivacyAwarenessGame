@@ -48,6 +48,7 @@ public class Player : MonoBehaviour
         {
             InputMovement();
             InputColorChange();
+            Camera.main.GetComponent<SmoothFollow>().target = GetComponent<NetworkView>().transform;
         }
         else
         {
