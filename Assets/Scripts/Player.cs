@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     private Vector3 forward;
     private Vector3 right;
 
+	private UIManager MyUIManager;
+	
     void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
     {
         Vector3 syncPosition = Vector3.zero;
@@ -48,6 +50,7 @@ public class Player : MonoBehaviour
     void Awake()
     {
         lastSynchronizationTime = Time.time;
+		MyUIManager = GameObject.Find("UIManager").GetComponent<UIManager>();     
     }
 
     void Update()
@@ -101,4 +104,16 @@ public class Player : MonoBehaviour
         if (GetComponent<NetworkView>().isMine)
             GetComponent<NetworkView>().RPC("ChangeColorTo", RPCMode.OthersBuffered, color);
     }
+
+	void OnCollisionEnter(Collision collision) {
+		if (collision.gameObject.tag == "TestPopUp") {
+			MyUIManager.TradeUI.SetActive(true);
+		}
+	}
+
+	void OnCollisionExit(Collision collision) {
+		if (collision.gameObject.tag == "TestPopUp") {
+			MyUIManager.TradeUI.SetActive(false);
+		}
+	}
 }
