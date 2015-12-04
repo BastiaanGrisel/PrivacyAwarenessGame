@@ -85,14 +85,14 @@ public class Player : MonoBehaviour
         GetComponent<Rigidbody>().position = Vector3.Lerp(syncStartPosition, syncEndPosition, syncTime / syncDelay);
     }
 
-	void OnCollisionEnter(Collision collision) {
-		if (collision.gameObject.tag == "Player") {
+	void OnTriggerEnter(Collider other) {
+		if (other.gameObject.tag == "Player") {
 			MyUIManager.TradeUI.SetActive(true);
 		}
 	}
 	
-	void OnCollisionExit(Collision collision) {
-		if (collision.gameObject.tag == "Player") {
+	void OnTriggerExit(Collider other) {
+		if (other.gameObject.tag == "Player") {
 			MyUIManager.TradeUI.SetActive(false);
 		}
 	}
