@@ -86,13 +86,13 @@ public class Player : MonoBehaviour
     }
 
 	void OnCollisionEnter(Collision collision) {
-		if (collision.gameObject.tag == "TestPopUp") {
+		if (collision.gameObject.tag == "Player") {
 			MyUIManager.TradeUI.SetActive(true);
 		}
 	}
 	
 	void OnCollisionExit(Collision collision) {
-		if (collision.gameObject.tag == "TestPopUp") {
+		if (collision.gameObject.tag == "Player") {
 			MyUIManager.TradeUI.SetActive(false);
 		}
 	}
