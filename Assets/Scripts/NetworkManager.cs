@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -76,6 +77,11 @@ public class NetworkManager : MonoBehaviour
 
     private void SpawnPlayer()
     {
-        Network.Instantiate(playerPrefab, Vector3.up * 5, Quaternion.identity, 0);
+//		["name"] = GetHashCode ().ToString ();
+		IDictionary<string, string> dict = new Dictionary<string, string>();
+		dict["name"] = "jan";
+
+		playerPrefab.GetComponent<Player> ().personalData = dict;
+		Network.Instantiate(playerPrefab, Vector3.up * 5, Quaternion.identity, 0);
     }
 }

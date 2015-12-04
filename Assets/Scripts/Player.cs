@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
@@ -13,7 +14,9 @@ public class Player : MonoBehaviour
     private Vector3 syncEndPosition = Vector3.zero;
 
 	private UIManager MyUIManager;
-	
+
+	public IDictionary<string, string> personalData;
+
     void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
     {
         Vector3 syncPosition = Vector3.zero;
@@ -88,6 +91,9 @@ public class Player : MonoBehaviour
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "Player") {
 			MyUIManager.TradeUI.SetActive(true);
+			// Get other players name
+			Debug.Log(other.gameObject.GetComponent<Player>().speed);
+//			Debug.Log (other.gameObject.GetComponent<Player>().personalData["name"]);
 		}
 	}
 	
