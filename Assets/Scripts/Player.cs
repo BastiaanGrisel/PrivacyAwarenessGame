@@ -3,16 +3,14 @@ using System.Collections;
 
 public class Player : MonoBehaviour
 {
-    public float speed = 10f;
+    public float speed = 0.1f;
+    public Vector3 direction;
 
     private float lastSynchronizationTime = 0f;
     private float syncDelay = 0f;
     private float syncTime = 0f;
     private Vector3 syncStartPosition = Vector3.zero;
     private Vector3 syncEndPosition = Vector3.zero;
-
-    private Vector3 forward;
-    private Vector3 right;
 
 	private UIManager MyUIManager;
 	
@@ -44,65 +42,47 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        forward = Vector3.forward;
-        right = Vector3.right;
+
     }
+
     void Awake()
     {
         lastSynchronizationTime = Time.time;
 		MyUIManager = GameObject.Find("UIManager").GetComponent<UIManager>();     
-    }
+	}
 
     void Update()
     {
         if (GetComponent<NetworkView>().isMine)
         {
             InputMovement();
-            InputColorChange();
             Camera.main.GetComponent<SmoothFollow>().target = GetComponent<NetworkView>().transform;
         }
         else
-        {
             SyncedMovement();
-        }
     }
-
 
     private void InputMovement()
     {
         if (Input.GetKey(KeyCode.W))
-            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position + transform.forward * speed * Time.deltaTime);
-
+            direction += transform.forward * 1f * Time.deltaTime;
         if (Input.GetKey(KeyCode.S))
-            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position - transform.forward * speed * Time.deltaTime);
-
+            direction -= transform.forward * 1f * Time.deltaTime;
         if (Input.GetKey(KeyCode.D))
-            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position + transform.right * speed * Time.deltaTime);
-
+            direction += transform.right * 1f * Time.deltaTime;
         if (Input.GetKey(KeyCode.A))
-            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position - transform.right * speed * Time.deltaTime);
+            direction -= transform.right * 1f * Time.deltaTime;
+        if (Input.GetKey(KeyCode.Space) && Physics.Raycast(transform.position, -transform.up, 1))
+            direction += transform.up * 10f * Time.deltaTime;
+
+        GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position + direction);
+        direction /= 1.1f;
     }
 
     private void SyncedMovement()
     {
         syncTime += Time.deltaTime;
-
         GetComponent<Rigidbody>().position = Vector3.Lerp(syncStartPosition, syncEndPosition, syncTime / syncDelay);
-    }
-
-
-    private void InputColorChange()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-            ChangeColorTo(new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)));
-    }
-
-    [RPC] void ChangeColorTo(Vector3 color)
-    {
-        GetComponent<Renderer>().material.color = new Color(color.x, color.y, color.z, 1f);
-
-        if (GetComponent<NetworkView>().isMine)
-            GetComponent<NetworkView>().RPC("ChangeColorTo", RPCMode.OthersBuffered, color);
     }
 
 	void OnCollisionEnter(Collision collision) {
@@ -110,7 +90,7 @@ public class Player : MonoBehaviour
 			MyUIManager.TradeUI.SetActive(true);
 		}
 	}
-
+	
 	void OnCollisionExit(Collision collision) {
 		if (collision.gameObject.tag == "TestPopUp") {
 			MyUIManager.TradeUI.SetActive(false);
