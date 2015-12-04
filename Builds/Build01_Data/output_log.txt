@@ -1,0 +1,35 @@
+Mono path[0] = 'C:/Users/Ruben/Documents/TU Delft - Master Computer Science/Serious Game Building/Multiplayer/Builds/Build01_Data/Managed'
+Mono path[1] = 'C:/Users/Ruben/Documents/TU Delft - Master Computer Science/Serious Game Building/Multiplayer/Builds/Build01_Data/Mono'
+Mono config path = 'C:/Users/Ruben/Documents/TU Delft - Master Computer Science/Serious Game Building/Multiplayer/Builds/Build01_Data/Mono/etc'
+PlayerConnection initialized from C:/Users/Ruben/Documents/TU Delft - Master Computer Science/Serious Game Building/Multiplayer/Builds/Build01_Data (debug = 0)
+PlayerConnection initialized network socket : 0.0.0.0 55318
+Multi-casting "[IP] 145.94.188.114 [Port] 55318 [Flags] 2 [Guid] 534734869 [EditorId] 2629243034 [Version] 1048832 [Id] WindowsPlayer(Ruben) [Debug] 0" to [225.0.0.222:54997]...
+PlayerConnection already initialized - listening to [145.94.188.114:55318]
+Initialize engine version: 5.2.3f1 (f3d16a1fa2dd)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: Intel(R) HD Graphics 4600 (ID=0x416)
+    Vendor:   Intel
+    VRAM:     128 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\Ruben\Documents\TU Delft - Master Computer Science\Serious Game Building\Multiplayer\Builds\Build01_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\Ruben\Documents\TU Delft - Master Computer Science\Serious Game Building\Multiplayer\Builds\Build01_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\Ruben\Documents\TU Delft - Master Computer Science\Serious Game Building\Multiplayer\Builds\Build01_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Users\Ruben\Documents\TU Delft - Master Computer Science\Serious Game Building\Multiplayer\Builds\Build01_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: C:\Users\Ruben\Documents\TU Delft - Master Computer Science\Serious Game Building\Multiplayer\Builds\Build01_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\Ruben\Documents\TU Delft - Master Computer Science\Serious Game Building\Multiplayer\Builds\Build01_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\Ruben\Documents\TU Delft - Master Computer Science\Serious Game Building\Multiplayer\Builds\Build01_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\Ruben\Documents\TU Delft - Master Computer Science\Serious Game Building\Multiplayer\Builds\Build01_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\Ruben\Documents\TU Delft - Master Computer Science\Serious Game Building\Multiplayer\Builds\Build01_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\Ruben\Documents\TU Delft - Master Computer Science\Serious Game Building\Multiplayer\Builds\Build01_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\Ruben\Documents\TU Delft - Master Computer Science\Serious Game Building\Multiplayer\Builds\Build01_Data\Managed\System.Core.dll (this message is harmless)
+- Completed reload, in  0.067 seconds
+<RI> Initializing input.
+<RI> Input initialized.
+desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
+<RI> Initialized touch support.
+Platform assembly: C:\Users\Ruben\Documents\TU Delft - Master Computer Science\Serious Game Building\Multiplayer\Builds\Build01_Data\Managed\System.dll (this message is harmless)
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 3a48 -> priority: 1 
+  Thread -> id: 3a44 -> priority: 1 
