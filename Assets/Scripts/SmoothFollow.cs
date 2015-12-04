@@ -6,9 +6,14 @@ using System.Collections;
 
 public class SmoothFollow : MonoBehaviour
 {
-    // The target we are following
+    // The target we are following.
     public Transform target;
+
+    // The previous target position.
     private Vector3 position;
+
+    // Place the script in the Camera-Control group in the component menu
+    [AddComponentMenu("Camera-Control/Smooth Follow")]
 
     // The distance in the x-z plane to the target
     public float distance = 10.0f;
@@ -18,20 +23,15 @@ public class SmoothFollow : MonoBehaviour
     public float heightDamping = 2.0f;
     public float rotationDamping = 3.0f;
 
- 
-
-    // Place the script in the Camera-Control group in the component menu
-    [AddComponentMenu("Camera-Control/Smooth Follow")]
-
     void LateUpdate()
     {
         // Early out if we don't have a target
-        if (!target) return;
+        if (!target)
+            return;
 
         // Calculate the current rotation angles
         float wantedRotationAngle = target.eulerAngles.y;
         float wantedHeight = target.position.y + height;
-
         float currentRotationAngle = transform.eulerAngles.y;
         float currentHeight = transform.position.y;
 
@@ -42,16 +42,15 @@ public class SmoothFollow : MonoBehaviour
         currentHeight = Mathf.Lerp(currentHeight, wantedHeight, heightDamping * Time.deltaTime);
 
         // Convert the angle into a rotation
-        var currentRotation = Quaternion.Euler(0, currentRotationAngle, 0);
+        Quaternion currentRotation = Quaternion.Euler(0, currentRotationAngle, 0);
 
         // Set the position of the camera on the x-z plane to:
         // distance meters behind the target
-        //transform.position = target.position;
-        //transform.position -= currentRotation * Vector3.forward * distance;
-        //transform.position = new Vector3(transform.position.x, currentHeight, transform.position.z);
+        transform.position = target.position;
+        transform.position -= currentRotation * Vector3.forward * distance;
 
-        Vector3 direction = position - target.position;
-        transform.position -= direction;
+        // Set the height of the camera
+        transform.position = new Vector3(transform.position.x, currentHeight, transform.position.z);
 
         if (Input.GetMouseButton(1))
         {
@@ -62,11 +61,11 @@ public class SmoothFollow : MonoBehaviour
         // Always look at the target from a specific distance.
         transform.LookAt(target);
         
-
         // Update the forward and right vectors of the entity to make it move with the camera.
         target.forward = transform.forward;
         target.right = transform.right;
 
+        // Remember the old target position.
         position = target.position;
     }
 }
