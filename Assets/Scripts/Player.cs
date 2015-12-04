@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     public float speed = 0.1f;
     public Vector3 direction;
@@ -16,33 +17,7 @@ public class Player : MonoBehaviour
 	private UIManager MyUIManager;
 
 	public IDictionary<string, string> personalData;
-
-    void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
-    {
-        Vector3 syncPosition = Vector3.zero;
-        Vector3 syncVelocity = Vector3.zero;
-        if (stream.isWriting)
-        {
-            syncPosition = GetComponent<Rigidbody>().position;
-            stream.Serialize(ref syncPosition);
-
-            syncPosition = GetComponent<Rigidbody>().velocity;
-            stream.Serialize(ref syncVelocity);
-        }
-        else
-        {
-            stream.Serialize(ref syncPosition);
-            stream.Serialize(ref syncVelocity);
-
-            syncTime = 0f;
-            syncDelay = Time.time - lastSynchronizationTime;
-            lastSynchronizationTime = Time.time;
-
-            syncEndPosition = syncPosition + syncVelocity * syncDelay;
-            syncStartPosition = GetComponent<Rigidbody>().position;
-        }
-    }
-
+	
     void Start()
     {
 
@@ -56,13 +31,11 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (GetComponent<NetworkView>().isMine)
+        if (isLocalPlayer)
         {
             InputMovement();
-            Camera.main.GetComponent<SmoothFollow>().target = GetComponent<NetworkView>().transform;
+            Camera.main.GetComponent<SmoothFollow>().target = GetComponent<Transform>().transform;
         }
-        else
-            SyncedMovement();
     }
 
     private void InputMovement()
@@ -81,13 +54,7 @@ public class Player : MonoBehaviour
         GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position + direction);
         direction /= 1.1f;
     }
-
-    private void SyncedMovement()
-    {
-        syncTime += Time.deltaTime;
-        GetComponent<Rigidbody>().position = Vector3.Lerp(syncStartPosition, syncEndPosition, syncTime / syncDelay);
-    }
-
+	
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "Player") {
 			MyUIManager.TradeUI.SetActive(true);
