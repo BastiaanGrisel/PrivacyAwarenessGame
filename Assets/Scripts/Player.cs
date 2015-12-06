@@ -17,7 +17,8 @@ public class Player : NetworkBehaviour
 	private UIManager MyUIManager;
 
 	public IDictionary<string, string> personalData;
-	
+	public List<int> keys = new List<int> {1,2,3}; 
+
     void Start()
     {
 
