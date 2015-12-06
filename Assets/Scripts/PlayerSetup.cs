@@ -1,11 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class PlayerSetup : NetworkBehaviour {
 
     [SerializeField]
 	private Behaviour[] componetsToDisable;
     private Camera sceneCamera;
+
+	public GameObject HealthUI;
+	
+	public List<int> keys = new List<int> (); 
 
     void Start ()
     {
@@ -22,6 +28,17 @@ public class PlayerSetup : NetworkBehaviour {
             {
                 sceneCamera.gameObject.SetActive(false);
             }
+
+			System.Random rnd = new System.Random();
+			keys.Add(rnd.Next(1, 4));
+			keys.Add(rnd.Next(1, 4));
+			keys.Add(rnd.Next(1, 4));
+
+			for (int i = 0; i < keys.Count; i++) {
+				HealthUI.GetComponent<HUDKeys>().KeyTexts[i].text = keys[i].ToString();
+			}
+
+			Instantiate(HealthUI);
         }
 	}
 

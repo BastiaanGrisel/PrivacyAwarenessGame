@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class LockCube : MonoBehaviour {
 
@@ -21,7 +22,7 @@ public class LockCube : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<Player> ().keys.Contains (Key)) {
+		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerSetup> ().keys.Contains (Key)) {
 			Door.GetComponent<UnlockableDoor>().counter++;
 			Destroy(gameObject);
 		}
