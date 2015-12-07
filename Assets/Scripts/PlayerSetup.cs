@@ -10,8 +10,12 @@ public class PlayerSetup : NetworkBehaviour {
     private Camera sceneCamera;
 
 	public GameObject HealthUI;
-	
-	public List<int> keys = new List<int> (); 
+
+	public SyncListInt keys;
+
+	void Awake() {
+		keys = new SyncListInt ();
+	}
 
     void Start ()
     {
@@ -29,16 +33,10 @@ public class PlayerSetup : NetworkBehaviour {
                 sceneCamera.gameObject.SetActive(false);
             }
 
-			System.Random rnd = new System.Random();
-			keys.Add(rnd.Next(1, 4));
-			keys.Add(rnd.Next(1, 4));
-			keys.Add(rnd.Next(1, 4));
-
+			GameObject ui = Instantiate(HealthUI);
 			for (int i = 0; i < keys.Count; i++) {
-				HealthUI.GetComponent<HUDKeys>().KeyTexts[i].text = keys[i].ToString();
+				ui.GetComponent<HUDKeys>().KeyTexts[i].text = keys[i].ToString();
 			}
-
-			Instantiate(HealthUI);
         }
 	}
 

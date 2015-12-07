@@ -22,19 +22,9 @@ public class LockCube : NetworkBehaviour {
 
 	}
 
-//	[Command]
-//	public void CmdRemoveNetworkedObject(NetworkInstanceId netID)
-//	{
-//		GameObject theObject = NetworkServer.FindLocalObject(netID);
-//		NetworkServer.Destroy (theObject);
-//	}
-
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerSetup> ().keys.Contains (Key)) {
-//			Door.GetComponent<UnlockableDoor>().counter++;
 			other.gameObject.GetComponent<PlayerSetup>().CmdDestroyObject(netId);
-//			Destroy (gameObject);
-//			CmdRemoveNetworkedObject(GetComponent<NetworkIdentity>().netId);
 		}
 	}
 }
