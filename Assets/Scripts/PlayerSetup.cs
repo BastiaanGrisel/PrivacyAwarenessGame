@@ -54,4 +54,13 @@ public class PlayerSetup : NetworkBehaviour {
 		GameObject theObject = NetworkServer.FindLocalObject(netID);
 		NetworkServer.Destroy (theObject);
 	}
+
+	[Command]
+	public void CmdIncrementCounter(NetworkInstanceId netID)
+	{
+		GameObject theObject = NetworkServer.FindLocalObject(netID);
+
+		if(++theObject.GetComponent<UnlockableDoor> ().counter == 3)
+			NetworkServer.Destroy (theObject);
+	}
 }

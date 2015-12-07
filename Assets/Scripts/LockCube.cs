@@ -6,10 +6,10 @@ using UnityEngine.Networking;
 public class LockCube : NetworkBehaviour {
 
 	public int Key;
-//	public GameObject Door;
+	public GameObject Door;
 
 	// Use this for initialization
-	void OnValidate () {
+	void OnValidate () {	
 		gameObject.GetComponent<TextMesh> ().text = Key.ToString ();
 	}
 
@@ -24,6 +24,8 @@ public class LockCube : NetworkBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerSetup> ().keys.Contains (Key)) {
+				other.gameObject.GetComponent<PlayerSetup>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
+
 			other.gameObject.GetComponent<PlayerSetup>().CmdDestroyObject(netId);
 		}
 	}
