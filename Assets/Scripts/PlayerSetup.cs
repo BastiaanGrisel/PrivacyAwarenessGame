@@ -49,4 +49,11 @@ public class PlayerSetup : NetworkBehaviour {
             sceneCamera.gameObject.SetActive(true);
         }
     }
+
+	[Command]
+	public void CmdDestroyObject(NetworkInstanceId netID)
+	{
+		GameObject theObject = NetworkServer.FindLocalObject(netID);
+		NetworkServer.Destroy (theObject);
+	}
 }

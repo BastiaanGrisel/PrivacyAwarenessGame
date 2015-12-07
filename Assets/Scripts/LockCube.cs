@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 using UnityEngine.Networking;
 
-public class LockCube : MonoBehaviour {
+public class LockCube : NetworkBehaviour {
 
 	public int Key;
 	public GameObject Door;
@@ -32,7 +32,8 @@ public class LockCube : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerSetup> ().keys.Contains (Key)) {
 			Door.GetComponent<UnlockableDoor>().counter++;
-			Destroy (gameObject);
+			other.gameObject.GetComponent<PlayerSetup>().CmdDestroyObject(netId);
+//			Destroy (gameObject);
 //			CmdRemoveNetworkedObject(GetComponent<NetworkIdentity>().netId);
 		}
 	}
