@@ -4,13 +4,10 @@ using UnityEngine.Networking;
 
 public class MyNetworkManager : NetworkManager {
 
-	// Use this for initialization
-	void Start () {
-	
+	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+	{
+		var player = (GameObject)GameObject.Instantiate(playerPrefab, GetStartPosition().position, Quaternion.identity);
+		NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }
