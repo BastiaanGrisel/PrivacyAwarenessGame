@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 public class LockCube : NetworkBehaviour {
 
 	public int Key;
-	public GameObject Door;
+//	public GameObject Door;
 
 	// Use this for initialization
 	void OnValidate () {
@@ -31,7 +31,7 @@ public class LockCube : NetworkBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerSetup> ().keys.Contains (Key)) {
-			Door.GetComponent<UnlockableDoor>().counter++;
+//			Door.GetComponent<UnlockableDoor>().counter++;
 			other.gameObject.GetComponent<PlayerSetup>().CmdDestroyObject(netId);
 //			Destroy (gameObject);
 //			CmdRemoveNetworkedObject(GetComponent<NetworkIdentity>().netId);
