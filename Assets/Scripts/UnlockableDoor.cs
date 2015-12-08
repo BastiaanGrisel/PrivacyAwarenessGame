@@ -15,11 +15,11 @@ public class UnlockableDoor : NetworkBehaviour {
 //		locks = 
 	}
 
-	public void ResetLocks(int[] keys) {
-		for(int i = 0; i < locks.Count; i++) {
-			locks[i].SetKey(keys[i]);
-		}
-	}
+//	public void ResetLocks(int[] keys) {
+//		for(int i = 0; i < locks.Count; i++) {
+//			locks[i].SetKey(keys[i]);
+//		}
+//	}
 
 	public void RegisterLock(LockCube l) {
 		locks.Add (l);
@@ -27,6 +27,6 @@ public class UnlockableDoor : NetworkBehaviour {
 
 	[ClientRpc]
 	public void RpcSetActive (bool on) {
-		gameObject.SetActive (on);
+		gameObject.GetComponent<MeshRenderer> ().enabled = on;
 	}
 }

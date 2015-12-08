@@ -56,7 +56,6 @@ public class PlayerSetup : NetworkBehaviour {
 	{
 		GameObject theObject = NetworkServer.FindLocalObject(netID);
 		theObject.GetComponent<LockCube>().RpcSetActive(false);
-//		NetworkServer.Destroy (theObject);
 	}
 
 	[Command]
@@ -66,15 +65,14 @@ public class PlayerSetup : NetworkBehaviour {
 
 		if (++theObject.GetComponent<UnlockableDoor> ().counter == 3)
 			theObject.GetComponent<UnlockableDoor>().RpcSetActive(false);
-//			theObject.SetActive (false);
-//			NetworkServer.Destroy (theObject);
 	}
 
 	[Command]
 	// Networkinstance should be a door!
 	public void CmdResetLocks(NetworkInstanceId doorNetID, NetworkInstanceId netID1, NetworkInstanceId netID2, NetworkInstanceId netID3) {
 		GameObject door = NetworkServer.FindLocalObject(doorNetID);
-		door.SetActive(true);
+		door.GetComponent<UnlockableDoor>().RpcSetActive(true);
+		door.GetComponent<UnlockableDoor> ().counter = 0;
 
 		GameObject lock1 = NetworkServer.FindLocalObject(netID1);
 		lock1.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
@@ -82,10 +80,10 @@ public class PlayerSetup : NetworkBehaviour {
 
 		GameObject lock2 = NetworkServer.FindLocalObject(netID2);
 		lock2.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
-		lock1.GetComponent<LockCube> ().RpcSetActive (true);
+		lock2.GetComponent<LockCube> ().RpcSetActive (true);
 
 		GameObject lock3 = NetworkServer.FindLocalObject(netID3);
 		lock3.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
-		lock1.GetComponent<LockCube> ().RpcSetActive (true);
+		lock3.GetComponent<LockCube> ().RpcSetActive (true);
 	}
 }
