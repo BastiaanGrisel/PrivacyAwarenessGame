@@ -1,32 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(PlayerMotor))]
-public class PlayerController : MonoBehaviour {
+public class PlayerController : NetworkBehaviour {
     [SerializeField]
     private float speed = 5f;
     [SerializeField]
     private float mouseSensitivity = 3f;
+    [SyncVar]
+    public bool ableToMove;
 
     private PlayerMotor motor;
     void Start ()
     {
         motor = GetComponent<PlayerMotor>();
+        ableToMove = true;
     }
 
     void Update ()
     {
-        // Calculate velocity as a 3D vector
-        float xMov = Input.GetAxisRaw("Horizontal");
-        float zMov = Input.GetAxisRaw("Vertical");
+        if (ableToMove)
+        {
+            // Calculate velocity as a 3D vector
+            float xMov = Input.GetAxisRaw("Horizontal");
+            float zMov = Input.GetAxisRaw("Vertical");
 
-        Vector3 movHorizontal = transform.right * xMov;
-        Vector3 movVertical = transform.forward * zMov;
+            Vector3 movHorizontal = transform.right * xMov;
+            Vector3 movVertical = transform.forward * zMov;
 
-        Vector3 velocity = (movHorizontal + movVertical).normalized * speed;
+            Vector3 velocity = (movHorizontal + movVertical).normalized * speed;
 
-        // Apply movement
-        motor.Move(velocity);
+            // Apply movement
+            motor.Move(velocity);
+        }
 
         // Calculate rotation as a 3D vector (turning around)
         float yRot = Input.GetAxisRaw("Mouse X");
