@@ -13,8 +13,11 @@ public class PlayerSetup : NetworkBehaviour {
 
 	public SyncListInt keys;
 
+	System.Random rnd;
+
 	void Awake() {
 		keys = new SyncListInt ();
+		rnd = new System.Random();
 	}
 
     void Start ()
@@ -62,5 +65,14 @@ public class PlayerSetup : NetworkBehaviour {
 
 		if(++theObject.GetComponent<UnlockableDoor> ().counter == 3)
 			NetworkServer.Destroy (theObject);
+	}
+
+	[Command]
+	// Networkinstance should be a door!
+	public void CmdResetLocks(NetworkInstanceId netID) {
+		GameObject door = NetworkServer.FindLocalObject(netID);
+		int[] l = new int[] {rnd.Next (1, 4), rnd.Next (1, 4), rnd.Next (1, 4)};
+		door.GetComponent<UnlockableDoor> ().ResetLocks (l);
+
 	}
 }

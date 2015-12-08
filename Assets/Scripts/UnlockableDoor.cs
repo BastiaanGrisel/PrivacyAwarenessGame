@@ -8,28 +8,20 @@ public class UnlockableDoor : NetworkBehaviour {
 	[SyncVar]
 	public int counter;
 
+	private List<LockCube> locks;
+
 	void Awake() {
 		counter = 0;
+		locks = new List<LockCube> ();
 	}
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-//		bool destory = true;
-//
-//		foreach (GameObject l in locks)
-//			if (l != null)
-//				destory = false;
-//			
-//		if(destory) Destroy (this.gameObject);
+	public void ResetLocks(int[] keys) {
+		for(int i = 0; i < locks.Count; i++) {
+			locks[i].SetKey(keys[i]);
+		}
 	}
 
-	void OnCollisionEnter(Collision collision) {
-		
+	public void RegisterLock(LockCube l) {
+		locks.Add (l);
 	}
-
 }

@@ -13,13 +13,17 @@ public class LockCube : NetworkBehaviour {
 		gameObject.GetComponent<TextMesh> ().text = Key.ToString ();
 	}
 
-	void Start() {
-
+	void Awake() {
+		Door.GetComponent<UnlockableDoor>().RegisterLock(this);
 	}
 
 	// Update is called once per frame
 	void Update () {
 
+	}
+	
+	public void SetKey(int k) {
+		gameObject.GetComponent<TextMesh> ().text = k.ToString ();
 	}
 
 	void OnTriggerEnter(Collider other) {
