@@ -20,7 +20,6 @@ public class PlayerController : NetworkBehaviour {
 
     void Update ()
     {
-        Debug.Log("Update:" + ableToMove);
         if (ableToMove)
         {
             // Calculate velocity as a 3D vector
