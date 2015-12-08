@@ -31,6 +31,7 @@ public class LockCube : NetworkBehaviour {
 
 	public void SetKey(int k) {
 		gameObject.GetComponent<TextMesh> ().text = k.ToString ();
+		Key = k;
 	}
 
 	void OnTriggerEnter(Collider other) {
