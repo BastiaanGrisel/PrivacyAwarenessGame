@@ -24,4 +24,9 @@ public class UnlockableDoor : NetworkBehaviour {
 	public void RegisterLock(LockCube l) {
 		locks.Add (l);
 	}
+
+	[ClientRpc]
+	public void RpcSetActive (bool on) {
+		gameObject.SetActive (on);
+	}
 }

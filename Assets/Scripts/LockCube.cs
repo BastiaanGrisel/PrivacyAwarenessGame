@@ -23,7 +23,12 @@ public class LockCube : NetworkBehaviour {
 	void Update () {
 
 	}
-	
+
+	[ClientRpc]
+	public void RpcSetActive (bool on) {
+		gameObject.SetActive (on);
+	}
+
 	public void SetKey(int k) {
 		gameObject.GetComponent<TextMesh> ().text = k.ToString ();
 	}
@@ -32,7 +37,7 @@ public class LockCube : NetworkBehaviour {
 		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerSetup> ().keys.Contains (Key)) {
 				other.gameObject.GetComponent<PlayerSetup>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
 
-			other.gameObject.GetComponent<PlayerSetup>().CmdDestroyObject(netId);
+			other.gameObject.GetComponent<PlayerSetup>().CmdDestroyLockCube(netId);
 		}
 	}
 }
