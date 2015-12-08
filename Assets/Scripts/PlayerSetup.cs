@@ -69,10 +69,19 @@ public class PlayerSetup : NetworkBehaviour {
 
 	[Command]
 	// Networkinstance should be a door!
-	public void CmdResetLocks(NetworkInstanceId netID) {
-		GameObject door = NetworkServer.FindLocalObject(netID);
-		int[] l = new int[] {rnd.Next (1, 4), rnd.Next (1, 4), rnd.Next (1, 4)};
-		door.GetComponent<UnlockableDoor> ().ResetLocks (l);
+	public void CmdResetLocks(NetworkInstanceId netID1, NetworkInstanceId netID2, NetworkInstanceId netID3) {
+		GameObject lock1 = NetworkServer.FindLocalObject(netID1);
+		lock1.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
+
+		GameObject lock2 = NetworkServer.FindLocalObject(netID2);
+		lock2.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
+
+		GameObject lock3 = NetworkServer.FindLocalObject(netID3);
+		lock3.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
+
+//		GameObject door = NetworkServer.FindLocalObject(netID);
+//		int[] l = new int[] {rnd.Next (1, 4), rnd.Next (1, 4), rnd.Next (1, 4)};
+//		door.GetComponent<UnlockableDoor> ().ResetLocks (l);
 
 	}
 }

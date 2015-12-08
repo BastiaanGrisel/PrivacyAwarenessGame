@@ -8,11 +8,11 @@ public class UnlockableDoor : NetworkBehaviour {
 	[SyncVar]
 	public int counter;
 
-	private List<LockCube> locks;
+	public List<LockCube> locks = new List<LockCube> ();
 
 	void Awake() {
 		counter = 0;
-		locks = new List<LockCube> ();
+//		locks = 
 	}
 
 	public void ResetLocks(int[] keys) {

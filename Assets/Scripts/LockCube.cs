@@ -5,7 +5,9 @@ using UnityEngine.Networking;
 
 public class LockCube : NetworkBehaviour {
 
+	[SyncVar(hook = "SetKey")] 
 	public int Key;
+
 	public GameObject Door;
 
 	// Use this for initialization
