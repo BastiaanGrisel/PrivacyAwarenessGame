@@ -91,11 +91,9 @@ public class PlayerSetup : NetworkBehaviour {
     public void CmdEndGame()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        Debug.Log(players.Length);
         foreach (GameObject player in players)
         {
             player.GetComponent<PlayerController>().ableToMove = false;
-            Debug.Log(player.GetComponent<PlayerController>().ableToMove);
         }
 
     }
