@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 
 [RequireComponent(typeof(PlayerMotor))]
-public class PlayerController : NetworkBehaviour {
+public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float speed = 5f;
     [SerializeField]
@@ -14,6 +14,9 @@ public class PlayerController : NetworkBehaviour {
     void Start ()
     {
         motor = GetComponent<PlayerMotor>();
+    }
+
+    void Awake(){
         serverLogic = GameObject.FindObjectOfType<ServerLogic>();
     }
 
@@ -31,6 +34,11 @@ public class PlayerController : NetworkBehaviour {
             Vector3 velocity = (movHorizontal + movVertical).normalized * speed;
 
             // Apply movement
+            motor.Move(velocity);
+        }
+        else
+        {
+            Vector3 velocity = Vector3.zero;
             motor.Move(velocity);
         }
 

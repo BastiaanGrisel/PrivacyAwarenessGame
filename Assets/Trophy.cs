@@ -5,12 +5,18 @@ public class Trophy : MonoBehaviour {
 
     [SerializeField]
     private bool isWinningTrophy;
+    private ServerLogic serverLogic;
 
 	// Use this for initialization
 	void Start () {
 
 	}
-	
+
+    void Awake()
+    {
+        serverLogic = GameObject.FindObjectOfType<ServerLogic>();
+    }
+
 	// Update is called once per frame
 	void Update () {
 
@@ -20,7 +26,7 @@ public class Trophy : MonoBehaviour {
     {
         if (other.gameObject.tag == "Player" && isWinningTrophy)
         {
-            other.gameObject.GetComponent<PlayerSetup>().CmdEndGame();
+            serverLogic.CmdEndGame();
         }
     }
 }

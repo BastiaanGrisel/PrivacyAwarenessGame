@@ -22,6 +22,6 @@ public class ServerLogic : NetworkBehaviour {
     [Command]
     public void CmdEndGame()
     {
-        
+        isRunning = false;
     }
 }

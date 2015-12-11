@@ -86,15 +86,4 @@ public class PlayerSetup : NetworkBehaviour {
 		lock3.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
 		lock3.GetComponent<LockCube> ().RpcSetActive (true);
 	}
-
-    [Command]
-    public void CmdEndGame()
-    {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject player in players)
-        {
-            //player.GetComponent<PlayerController>().ableToMove = false;
-        }
-
-    }
 }
