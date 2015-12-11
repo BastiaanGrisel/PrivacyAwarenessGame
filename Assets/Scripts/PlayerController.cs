@@ -8,7 +8,7 @@ public class PlayerController : NetworkBehaviour {
     private float speed = 5f;
     [SerializeField]
     private float mouseSensitivity = 3f;
-    [SyncVar(hook = "SetAbleToMove")]
+    [SyncVar]
     public bool ableToMove;
 
     private PlayerMotor motor;
@@ -50,10 +50,5 @@ public class PlayerController : NetworkBehaviour {
 
         // Apply camera rotation
         motor.RotateCamera(cameraRotation);
-    }
-
-    public void SetAbleToMove(bool able)
-    {
-        ableToMove = able;
     }
 }
