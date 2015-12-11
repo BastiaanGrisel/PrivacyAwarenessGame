@@ -8,7 +8,7 @@ public class LockCube : NetworkBehaviour {
 	[SyncVar(hook = "SetKey")] 
 	public int Key;
 
-//	public GameObject Door;
+	public GameObject Door;
 
 	// Use this for initialization
 	void OnValidate () {	
@@ -16,7 +16,7 @@ public class LockCube : NetworkBehaviour {
 	}
 
 	void Awake() {
-//		Door.GetComponent<UnlockableDoor>().RegisterLock(this);
+		Door.GetComponent<UnlockableDoor>().RegisterLock(this);
 	}
 
 	// Update is called once per frame
@@ -35,10 +35,10 @@ public class LockCube : NetworkBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-//		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerSetup> ().keys.Contains (Key)) {
-//				other.gameObject.GetComponent<PlayerSetup>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
-			Debug.Log ("Touch");
+		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerSetup> ().keys.Contains (Key)) {
+				other.gameObject.GetComponent<PlayerSetup>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
+
 			other.gameObject.GetComponent<PlayerSetup>().CmdDestroyLockCube(netId);
-//		}
+		}
 	}
 }
