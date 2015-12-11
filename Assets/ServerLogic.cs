@@ -18,10 +18,4 @@ public class ServerLogic : NetworkBehaviour {
             isRunning = true;
         }
 	}
-
-    [Command]
-    public void CmdEndGame()
-    {
-        isRunning = false;
-    }
 }

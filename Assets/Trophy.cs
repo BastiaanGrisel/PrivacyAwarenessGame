@@ -4,7 +4,7 @@ using System.Collections;
 public class Trophy : MonoBehaviour {
 
     [SerializeField]
-    private bool isWinningTrophy;
+    public bool isWinningTrophy;
     private ServerLogic serverLogic;
 
 	// Use this for initialization
@@ -21,12 +21,4 @@ public class Trophy : MonoBehaviour {
 	void Update () {
 
 	}
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Player" && isWinningTrophy)
-        {
-            serverLogic.CmdEndGame();
-        }
-    }
 }

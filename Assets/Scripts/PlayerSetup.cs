@@ -15,9 +15,12 @@ public class PlayerSetup : NetworkBehaviour {
 
 	System.Random rnd;
 
+    private ServerLogic serverLogic;
+
 	void Awake() {
 		keys = new SyncListInt ();
 		rnd = new System.Random();
+        serverLogic = GameObject.FindObjectOfType<ServerLogic>();
 	}
 
     void Start ()
@@ -86,4 +89,10 @@ public class PlayerSetup : NetworkBehaviour {
 		lock3.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
 		lock3.GetComponent<LockCube> ().RpcSetActive (true);
 	}
+
+    [Command]
+    public void CmdEndGame()
+    {
+        serverLogic.isRunning = false;
+    }
 }

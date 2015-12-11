@@ -58,4 +58,12 @@ public class PlayerController : MonoBehaviour {
         // Apply camera rotation
         motor.RotateCamera(cameraRotation);
     }
+
+    void OnCollisionEnter(Collision c)
+    {
+        if (c.gameObject.tag == "Trophy" && ((Trophy)c.gameObject.GetComponent<Trophy>()).isWinningTrophy)
+        {
+            this.GetComponent<PlayerSetup>().CmdEndGame();
+        }
+    }
 }
