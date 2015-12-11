@@ -89,10 +89,4 @@ public class PlayerSetup : NetworkBehaviour {
 		lock3.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
 		lock3.GetComponent<LockCube> ().RpcSetActive (true);
 	}
-
-    [Command]
-    public void CmdEndGame()
-    {
-        serverLogic.isRunning = false;
-    }
 }

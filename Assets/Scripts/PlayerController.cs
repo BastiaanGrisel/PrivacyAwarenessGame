@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 
 [RequireComponent(typeof(PlayerMotor))]
-public class PlayerController : MonoBehaviour {
+public class PlayerController : NetworkBehaviour {
     [SerializeField]
     private float speed = 5f;
     [SerializeField]
@@ -63,7 +63,15 @@ public class PlayerController : MonoBehaviour {
     {
         if (c.gameObject.tag == "Trophy" && ((Trophy)c.gameObject.GetComponent<Trophy>()).isWinningTrophy)
         {
-            this.GetComponent<PlayerSetup>().CmdEndGame();
+            c.gameObject.SetActive(false);
+            if (GameObject.FindGameObjectsWithTag("Trophy").Length == 0)
+                this.CmdEndGame();
         }
+    }
+
+    [Command]
+    public void CmdEndGame()
+    {
+        serverLogic.isRunning = false;
     }
 }
