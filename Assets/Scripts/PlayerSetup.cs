@@ -93,7 +93,7 @@ public class PlayerSetup : NetworkBehaviour {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players)
         {
-            player.GetComponent<PlayerController>().ableToMove = false;
+            //player.GetComponent<PlayerController>().ableToMove = false;
         }
 
     }

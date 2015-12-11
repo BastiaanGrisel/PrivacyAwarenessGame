@@ -8,19 +8,18 @@ public class PlayerController : NetworkBehaviour {
     private float speed = 5f;
     [SerializeField]
     private float mouseSensitivity = 3f;
-    [SyncVar]
-    public bool ableToMove;
-
+    [SerializeField]
     private PlayerMotor motor;
+    private ServerLogic serverLogic;
     void Start ()
     {
         motor = GetComponent<PlayerMotor>();
-        ableToMove = true;
+        serverLogic = GameObject.FindObjectOfType<ServerLogic>();
     }
 
     void Update ()
     {
-        if (ableToMove)
+        if (serverLogic.isRunning)
         {
             // Calculate velocity as a 3D vector
             float xMov = Input.GetAxisRaw("Horizontal");
