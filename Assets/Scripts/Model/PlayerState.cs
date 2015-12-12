@@ -3,7 +3,10 @@ using UnityEngine.Networking;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class PlayerSetup : NetworkBehaviour {
+public class PlayerState : NetworkBehaviour
+{
+    // Profile that the player is using
+    public Profile profile;
 
     [SerializeField]
 	private Behaviour[] componetsToDisable;
@@ -15,12 +18,10 @@ public class PlayerSetup : NetworkBehaviour {
 
 	System.Random rnd;
 
-    private ServerLogic serverLogic;
-
-	void Awake() {
+	void Awake()
+    {
 		keys = new SyncListInt ();
 		rnd = new System.Random();
-        serverLogic = GameObject.FindObjectOfType<ServerLogic>();
 	}
 
     void Start ()
@@ -45,6 +46,12 @@ public class PlayerSetup : NetworkBehaviour {
 			}
         }
 	}
+
+    public void SetPlayerProfile(Profile profile)
+    {
+        this.profile = profile;
+        GetComponent<Tag3D>().tagText = profile.email;
+    }
 
     void OnDisable()
     {

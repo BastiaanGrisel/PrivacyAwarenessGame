@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 
 [RequireComponent(typeof(PlayerMotor))]
-public class PlayerController : NetworkBehaviour {
+public class PlayerController : NetworkBehaviour
+{
     [SerializeField]
     private float speed = 5f;
     [SerializeField]
@@ -11,18 +12,20 @@ public class PlayerController : NetworkBehaviour {
     [SerializeField]
     private PlayerMotor motor;
     private ServerLogic serverLogic;
-    void Start ()
+
+    void Start()
     {
         motor = GetComponent<PlayerMotor>();
     }
 
-    void Awake(){
-        serverLogic = GameObject.FindObjectOfType<ServerLogic>();
+    void Awake()
+    {
+        serverLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
     }
 
-    void Update ()
+    void Update()
     {
-        if (serverLogic.isRunning)
+        if (serverLogic.gameStarted)
         {
             // Calculate velocity as a 3D vector
             float xMov = Input.GetAxisRaw("Horizontal");
@@ -72,6 +75,6 @@ public class PlayerController : NetworkBehaviour {
     [Command]
     public void CmdEndGame()
     {
-        serverLogic.isRunning = false;
+        serverLogic.gameStarted = false;
     }
 }

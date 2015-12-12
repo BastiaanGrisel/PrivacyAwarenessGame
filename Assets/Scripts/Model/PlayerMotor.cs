@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerMotor : MonoBehaviour {
-    [SerializeField]
-    private Camera cam;
-    
+public class PlayerMotor : MonoBehaviour
+{
     private Vector3 velocity = Vector3.zero;
     private Vector3 rotation = Vector3.zero;
     private Vector3 cameraRotation = Vector3.zero;
@@ -53,9 +51,9 @@ public class PlayerMotor : MonoBehaviour {
     void PerformRotation()
     {
         rb.MoveRotation(rb.rotation * Quaternion.Euler(rotation));
-        if (cam != null)
+        if (Camera.main != null)
         {
-            cam.transform.Rotate(-cameraRotation);
+            Camera.main.transform.Rotate(-cameraRotation);
         }
     }
 }
