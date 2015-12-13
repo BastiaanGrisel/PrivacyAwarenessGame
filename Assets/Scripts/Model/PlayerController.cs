@@ -13,13 +13,9 @@ public class PlayerController : NetworkBehaviour
     private PlayerMotor motor;
     private ServerLogic serverLogic;
 
-    void Start()
-    {
-        motor = GetComponent<PlayerMotor>();
-    }
-
     void Awake()
     {
+		motor = GetComponent<PlayerMotor>();
         serverLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
     }
 
