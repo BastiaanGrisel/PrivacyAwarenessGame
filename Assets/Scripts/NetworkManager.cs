@@ -13,7 +13,7 @@ public class NetworkManager : UnityEngine.Networking.NetworkManager
     public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId)
     {
         // Instantiate a Player
-        GameObject player = (GameObject)GameObject.Instantiate(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        GameObject player = (GameObject)GameObject.Instantiate(playerPrefab, GetStartPosition().position, Quaternion.identity);
         player.AddComponent<Tag3D>();
         NetworkServer.AddPlayerForConnection(connection, player, playerControllerId);
 
