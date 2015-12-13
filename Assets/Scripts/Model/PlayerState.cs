@@ -9,7 +9,7 @@ public class PlayerState : NetworkBehaviour
     public Profile profile;
 
     [SerializeField]
-	private Behaviour[] componetsToDisable;
+	private Behaviour[] componentsToDisable;
     private Camera sceneCamera;
 
 	public GameObject HealthUI;
@@ -28,7 +28,7 @@ public class PlayerState : NetworkBehaviour
     {
         if (!isLocalPlayer)
         {
-            foreach (Behaviour comp in componetsToDisable){
+            foreach (Behaviour comp in componentsToDisable){
                 comp.enabled = false;
             }
         }
