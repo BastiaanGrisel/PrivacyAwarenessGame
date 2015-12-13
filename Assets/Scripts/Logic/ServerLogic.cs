@@ -14,7 +14,7 @@ public class ServerLogic : NetworkBehaviour
     // [Updated] Game properties
     private List<Profile> profiles = new List<Profile>();
 
-    public void Initialize()
+    public void Awake()
     {
         gameStarted = false;
 
