@@ -34,8 +34,11 @@ public class ServerLogic : NetworkBehaviour
     }
 
     // Dynamically assigns a Player certain data.
-    public void InitializePlayer(GameObject player)
+    public void InitializePlayer(PlayerState player)
     {
+        // Add a Tag3D to the player
+        player.gameObject.AddComponent<Tag3D>();
+
         // [Refactor] Assign the Keys to the player.
         System.Random rnd = new System.Random();
 
@@ -44,16 +47,16 @@ public class ServerLogic : NetworkBehaviour
             if (unusedKeys.Count > 0)
             {
                 int index = rnd.Next(0, unusedKeys.Count - 1);
-                player.GetComponent<PlayerState>().keys.Add(unusedKeys[index]);
+                player.keys.Add(unusedKeys[index]);
                 unusedKeys.RemoveAt(index);
             }
             else
-                player.GetComponent<PlayerState>().keys.Add(keys[rnd.Next(0, keys.Count - 1)]);
+                player.keys.Add(keys[rnd.Next(0, keys.Count - 1)]);
         }
 
         // Assign a profile to the player.
         // [TODO]: Edit code to take action when the profiles are exhausted.
-        player.GetComponent<PlayerState>().SetPlayerProfile(profiles[0]);
+        player.SetPlayerProfile(profiles[0]);
         profiles.RemoveAt(0);
     }
 	

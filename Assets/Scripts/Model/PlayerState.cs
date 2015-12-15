@@ -22,10 +22,11 @@ public class PlayerState : NetworkBehaviour
     {
 		keys = new SyncListInt ();
 		rnd = new System.Random();
-	}
+    }
 
     void Start ()
     {
+        GameObject.Find("Game").GetComponent<ServerLogic>().InitializePlayer(this);
         if (!isLocalPlayer)
         {
             foreach (Behaviour comp in componentsToDisable){
