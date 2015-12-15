@@ -11,11 +11,13 @@ public class Tag3D : MonoBehaviour
     }
     void OnGUI()
     {
-        Vector3 offset = new Vector3(0, 3, 0); // height above the target position
+        // Define the position relative to the target point.
+        Vector3 offset = new Vector3(0, 1, 0);
 
         Vector3 point = Camera.main.WorldToScreenPoint(transform.position + offset);
         point.y = Screen.height - point.y;
 
-        GUI.Label(new Rect(point.x - 35, point.y - 20, 200, 20), tagText);
+        int xOffset = tagText.Length * 3;
+        GUI.Label(new Rect(point.x - xOffset, point.y - 10, 200, 20), tagText);
     }
 }

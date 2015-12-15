@@ -15,10 +15,6 @@ public class PlayerState : NetworkBehaviour
 	public GameObject HealthUI;
     public List<int> keys = new List<int>();
 
-    void Awake()
-    {
-    }
-
     void Start ()
     {
         GameObject.Find("Game").GetComponent<ServerLogic>().InitializePlayer(this);
@@ -42,12 +38,6 @@ public class PlayerState : NetworkBehaviour
 			}
         }
 	}
-
-    public void SetPlayerProfile(Profile profile)
-    {
-        this.profile = profile;
-        GetComponent<Tag3D>().tagText = profile.email;
-    }
 
     void OnDisable()
     {
