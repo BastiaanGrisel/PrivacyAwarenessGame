@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(PlayerMotor))]
 public class PlayerController : NetworkBehaviour
@@ -69,7 +70,11 @@ public class PlayerController : NetworkBehaviour
 
         if (c.gameObject.tag == "Player")
         {
-            GameObject.FindObjectOfType<DataExchangeGUI>().otherPlayer = c.gameObject.GetInstanceID();
+            Text dataExchangeGUIText = GameObject.Find("DataExchangePlayerIDText").GetComponent<Text>();
+            dataExchangeGUIText.text = c.gameObject.GetInstanceID().ToString();
+            GameObject dataExchangeGUI = GameObject.Find("DataExchangeGUI");
+            dataExchangeGUI.GetComponent<DataExchangeGUI>().otherPlayer = c.gameObject.GetInstanceID();
+            dataExchangeGUI.SetActive(true);
         }
     }
 
