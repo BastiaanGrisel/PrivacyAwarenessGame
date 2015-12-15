@@ -13,15 +13,10 @@ public class PlayerState : NetworkBehaviour
     private Camera sceneCamera;
 
 	public GameObject HealthUI;
+    public List<int> keys = new List<int>();
 
-	public SyncListInt keys;
-
-	System.Random rnd;
-
-	void Awake()
+    void Awake()
     {
-		keys = new SyncListInt ();
-		rnd = new System.Random();
     }
 
     void Start ()
@@ -80,8 +75,11 @@ public class PlayerState : NetworkBehaviour
 
 	[Command]
 	// Networkinstance should be a door!
-	public void CmdResetLocks(NetworkInstanceId doorNetID, NetworkInstanceId netID1, NetworkInstanceId netID2, NetworkInstanceId netID3) {
-		GameObject door = NetworkServer.FindLocalObject(doorNetID);
+	public void CmdResetLocks(NetworkInstanceId doorNetID, NetworkInstanceId netID1, NetworkInstanceId netID2, NetworkInstanceId netID3)
+    {
+        System.Random rnd = new System.Random();
+
+        GameObject door = NetworkServer.FindLocalObject(doorNetID);
 		door.GetComponent<UnlockableDoor>().RpcSetActive(true);
 		door.GetComponent<UnlockableDoor> ().counter = 0;
 
