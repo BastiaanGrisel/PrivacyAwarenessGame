@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 
@@ -10,9 +10,9 @@ public class ResetDoorCube : NetworkBehaviour {
 		if (collision.gameObject.tag == "Player") {
 			collision.gameObject.GetComponent<PlayerState>().CmdResetLocks(
 				Door.GetComponent<UnlockableDoor>().netId,
-				Door.GetComponent<UnlockableDoor>().locks[0].netId,
-				Door.GetComponent<UnlockableDoor>().locks[1].netId,
-				Door.GetComponent<UnlockableDoor>().locks[2].netId);
+				Door.GetComponent<UnlockableDoor>().Locks[0].netId,
+				Door.GetComponent<UnlockableDoor>().Locks[1].netId,
+				Door.GetComponent<UnlockableDoor>().Locks[2].netId);
 		}
 	}
 

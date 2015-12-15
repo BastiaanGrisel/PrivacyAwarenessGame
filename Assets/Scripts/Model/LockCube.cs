@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 public class LockCube : NetworkBehaviour {
 
@@ -12,11 +13,15 @@ public class LockCube : NetworkBehaviour {
 
 	// Use this for initialization
 	void OnValidate () {	
-		gameObject.GetComponent<TextMesh> ().text = Key.ToString ();
+//		gameObject.GetComponent<TextMesh> ().text = Key.ToString ();
 	}
 
 	void Awake() {
 		Door.GetComponent<UnlockableDoor>().RegisterLock(this);
+	}
+
+	void Start() {
+
 	}
 
 	// Update is called once per frame
@@ -30,8 +35,11 @@ public class LockCube : NetworkBehaviour {
 	}
 
 	public void SetKey(int k) {
-		gameObject.GetComponent<TextMesh> ().text = k.ToString ();
 		Key = k;
+	}
+
+	public void ShowText(string t) {
+		gameObject.GetComponent<TextMesh> ().text = t;
 	}
 
 	void OnTriggerEnter(Collider other) {

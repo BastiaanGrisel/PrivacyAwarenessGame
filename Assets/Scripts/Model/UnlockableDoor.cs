@@ -6,23 +6,34 @@ using UnityEngine.Networking;
 public class UnlockableDoor : NetworkBehaviour {
 
 	[SyncVar]
-	public int counter;
+	public int Counter;
 
-	public List<LockCube> locks = new List<LockCube> ();
+	public List<LockCube> Locks = new List<LockCube> ();
+
+	private ServerLogic ServerLogic;
 
 	void Awake() {
-		counter = 0;
-//		locks = 
+		Counter = 0;
+		ServerLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
 	}
 
-//	public void ResetLocks(int[] keys) {
-//		for(int i = 0; i < locks.Count; i++) {
-//			locks[i].SetKey(keys[i]);
-//		}
-//	}
+	void Start() {
+		List<int> RandomNumbers = new List<int>();
+		int rnd;
 
+		for(int i = 0; i < Locks.Count; i++) {
+			do {
+				rnd = UnityEngine.Random.Range(0, ServerLogic.Categories.Count);
+			} while (RandomNumbers.Contains(rnd));
+
+			RandomNumbers.Add(rnd);
+			Locks[i].SetKey(rnd);
+			Locks[i].ShowText(ServerLogic.Categories[rnd]);
+		}
+	}
+	
 	public void RegisterLock(LockCube l) {
-		locks.Add (l);
+		Locks.Add (l);
 	}
 
 	[ClientRpc]

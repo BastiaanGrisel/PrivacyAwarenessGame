@@ -14,6 +14,19 @@ public class ServerLogic : NetworkBehaviour
     // [Updated] Game properties
     private List<Profile> profiles = new List<Profile>();
 
+	public List<string> Categories = new List<string> {
+		"Email",
+		"School",
+		"Hobby",
+		"Muziek",
+		"Film",
+		"Postcode",
+		"Relatie",
+		"Eten",
+		"Hond",
+		"Restaurant"
+	};
+
     public void Awake()
     {
         gameStarted = false;
