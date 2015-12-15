@@ -66,6 +66,11 @@ public class PlayerController : NetworkBehaviour
             if (GameObject.FindGameObjectsWithTag("Trophy").Length == 0)
                 this.CmdEndGame();
         }
+
+        if (c.gameObject.tag == "Player")
+        {
+            GameObject.FindObjectOfType<DataExchangeGUI>().otherPlayer = c.gameObject.GetInstanceID();
+        }
     }
 
     [Command]
