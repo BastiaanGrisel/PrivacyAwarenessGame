@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -59,7 +59,7 @@ public class PlayerState : NetworkBehaviour
 	{
 		GameObject theObject = NetworkServer.FindLocalObject(netID);
 
-		if (++theObject.GetComponent<UnlockableDoor> ().counter == 3)
+		if (++theObject.GetComponent<UnlockableDoor> ().Counter == 3)
 			theObject.GetComponent<UnlockableDoor>().RpcSetActive(false);
 	}
 
@@ -71,7 +71,7 @@ public class PlayerState : NetworkBehaviour
 
         GameObject door = NetworkServer.FindLocalObject(doorNetID);
 		door.GetComponent<UnlockableDoor>().RpcSetActive(true);
-		door.GetComponent<UnlockableDoor> ().counter = 0;
+		door.GetComponent<UnlockableDoor> ().Counter = 0;
 
 		GameObject lock1 = NetworkServer.FindLocalObject(netID1);
 		lock1.GetComponent<LockCube> ().Key = rnd.Next (1, 4);

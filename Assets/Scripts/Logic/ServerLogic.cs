@@ -12,6 +12,19 @@ public class ServerLogic : NetworkBehaviour
     private List<Profile> profiles = new List<Profile>();
     private List<KeyValuePair<int, int>> unassignedAttributes = new List<KeyValuePair<int, int>>();
 
+	public List<string> Categories = new List<string> {
+		"Email",
+		"School",
+		"Hobby",
+		"Muziek",
+		"Film",
+		"Postcode",
+		"Relatie",
+		"Eten",
+		"Hond",
+		"Restaurant"
+	};
+
     public void Awake()
     {
         // Pseudorandomnumber generator
