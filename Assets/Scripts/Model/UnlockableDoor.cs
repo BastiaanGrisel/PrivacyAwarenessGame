@@ -14,10 +14,11 @@ public class UnlockableDoor : NetworkBehaviour {
 
 	void Awake() {
 		Counter = 0;
-		ServerLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
 	}
 
 	void Start() {
+		ServerLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
+
 		List<int> RandomNumbers = new List<int>();
 		int rnd;
 
