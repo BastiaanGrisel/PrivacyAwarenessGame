@@ -1,86 +1,92 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System;
 
-public class Profile
+public enum ProfileAttributes { Email, School, Hobby, FavoriteArtist, FavoriteMovie, ZipCode, SocialStatus, FavoriteFood, Pet, Job }
+
+public class Profile : List<string>
 {
-    public string email;
-    public string school;
-    public string hobby;
-    public string favoriteArtist;
-    public string favoriteMovie;
-    public string zipcode;
-    public string socialStatus;
-    public string favoriteFood;
-    public string pet;
-    public string job;
-
-    public Profile(string email, string school, string hobby, string favoriteArtist, string favoriteMovie, string zipcode, string socialStatus, string favoriteFood, string pet, string job)
-    {
-        this.email = email;
-        this.school = school;
-        this.hobby = hobby;
-        this.favoriteArtist = favoriteArtist;
-        this.favoriteMovie = favoriteMovie;
-        this.zipcode = zipcode;
-        this.socialStatus = socialStatus;
-        this.favoriteFood = favoriteFood;
-        this.pet = pet;
-        this.job = job;
-    }
-
-    // TODO: Fix these classes.
-    public void SetField(int field, string value)
-    {
-        switch (field)
-        {
-            case 0:
-                email = value;
-                return;
-            case 1:
-                school = value;
-                return;
-            case 2:
-                hobby = value;
-                return;
-            case 3:
-                favoriteArtist = value;
-                return;
-            case 4:
-                favoriteMovie = value;
-                return;
-            case 5:
-                zipcode = value;
-                return;
-            case 6:
-                socialStatus = value;
-                return;
-            case 7:
-                favoriteFood = value;
-                return;
-            case 8:
-                pet = value;
-                return;
-            case 9:
-                job = value;
-                return;
-        }
-    }
-
-    public string GetField(int field)
-    {
-        switch (field)
-        {
-            case 0: return email;
-            case 1: return school;
-            case 2: return hobby;
-            case 3: return favoriteArtist;
-            case 4: return favoriteMovie;
-            case 5: return zipcode;
-            case 6: return socialStatus;
-            case 7: return favoriteFood;
-            case 8: return pet;
-            case 9: return job;
-            default: return "Error";
-        }
-    }
+	public Profile() {
+//		for(int i = 0; i < TotalNumberOfAttributes(); i++)
+//			this.Add (null);
+	}
+	
+	public static int TotalNumberOfAttributes() {
+		return Enum.GetNames (typeof(ProfileAttributes)).Length;
+	}
+	
+//	public List<string> Attributes;
+//
+//	public string Email, School, Hobby, FavoriteArtist, FavoriteMovie, ZipCode, SocialStatus, FavoriteFood, Pet, Job;
+//
+//    public Profile(string email, string school, string hobby, string favoriteArtist, string favoriteMovie, string zipcode, string socialStatus, string favoriteFood, string pet, string job)
+//    {
+//        this.Email = email;
+//        this.School = school;
+//        this.Hobby = hobby;
+//        this.FavoriteArtist = favoriteArtist;
+//        this.FavoriteMovie = favoriteMovie;
+//        this.ZipCode = zipcode;
+//        this.SocialStatus = socialStatus;
+//        this.FavoriteFood = favoriteFood;
+//        this.Pet = pet;
+//        this.Job = job;
+//    }
+//
+//    // TODO: Fix these classes.
+//    public void SetField(int field, string value)
+//    {
+//        switch (field)
+//        {
+//            case 0:
+//                Email = value;
+//                return;
+//            case 1:
+//                School = value;
+//                return;
+//            case 2:
+//                Hobby = value;
+//                return;
+//            case 3:
+//                FavoriteArtist = value;
+//                return;
+//            case 4:
+//                FavoriteMovie = value;
+//                return;
+//            case 5:
+//                ZipCode = value;
+//                return;
+//            case 6:
+//                SocialStatus = value;
+//                return;
+//            case 7:
+//                FavoriteFood = value;
+//                return;
+//            case 8:
+//                Pet = value;
+//                return;
+//            case 9:
+//                Job = value;
+//                return;
+//        }
+//    }
+//
+//    public string GetField(int field)
+//    {
+//        switch (field)
+//        {
+//            case 0: return Email;
+//            case 1: return School;
+//            case 2: return Hobby;
+//            case 3: return FavoriteArtist;
+//            case 4: return FavoriteMovie;
+//            case 5: return ZipCode;
+//            case 6: return SocialStatus;
+//            case 7: return FavoriteFood;
+//            case 8: return Pet;
+//            case 9: return Job;
+//            default: return "Error";
+//        }
+//    }
 }

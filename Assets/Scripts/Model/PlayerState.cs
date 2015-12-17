@@ -6,33 +6,41 @@ using UnityEngine.UI;
 public class PlayerState : NetworkBehaviour
 {
     // Profile that the player is using
-    public Profile profile;
+    [SyncVar] public int ProfileIndex;
+
+	// The number of times a player has cheated
+	public int Cheated = 0;
+
+	public int Team;  
 
     [SerializeField]
-	private Behaviour[] componentsToDisable;
-    private Camera sceneCamera;
+	private Behaviour[] ComponentsToDisable;
+    private Camera SceneCamera;
 
-	public GameObject HealthUI;
+	public GameObject KeysHUD;
     public List<int> keys = new List<int>();
 
     void Start ()
     {
-        GameObject.Find("Game").GetComponent<ServerLogic>().InitializePlayer(this);
+        GameObject.Find("Game").GetComponent<ServerLogic>().RegisterPlayer(this);
+
         if (!isLocalPlayer)
         {
-            foreach (Behaviour comp in componentsToDisable){
+			this.gameObject.AddComponent<Tag3D>();
+
+            foreach (Behaviour comp in ComponentsToDisable){
                 comp.enabled = false;
             }
         }
         else
         {
-            sceneCamera = Camera.main;
-            if (sceneCamera != null)
+            SceneCamera = Camera.main;
+            if (SceneCamera != null)
             {
-                sceneCamera.gameObject.SetActive(false);
+                SceneCamera.gameObject.SetActive(false);
             }
 
-			GameObject ui = Instantiate(HealthUI);
+			GameObject ui = Instantiate(KeysHUD);
 			for (int i = 0; i < keys.Count; i++) {
 				ui.GetComponent<HUDKeys>().KeyTexts[i].text = keys[i].ToString();
 			}
@@ -41,11 +49,17 @@ public class PlayerState : NetworkBehaviour
 
     void OnDisable()
     {
-        if (sceneCamera != null)
+        if (SceneCamera != null)
         {
-            sceneCamera.gameObject.SetActive(true);
+            SceneCamera.gameObject.SetActive(true);
         }
     }
+
+	void Update() {
+		if (Input.GetKeyDown ("n")) {
+			Debug.Log (Team + " T-P " + ProfileIndex);
+		}
+	}
 
 	[Command]
 	public void CmdDestroyLockCube(NetworkInstanceId netID)

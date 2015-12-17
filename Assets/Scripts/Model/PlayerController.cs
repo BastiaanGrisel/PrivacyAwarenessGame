@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -22,7 +22,7 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
-        if (serverLogic.gameStarted)
+        if (serverLogic.GameStarted)
         {
             // Calculate velocity as a 3D vector
             float xMov = Input.GetAxisRaw("Horizontal");
@@ -81,6 +81,6 @@ public class PlayerController : NetworkBehaviour
     [Command]
     public void CmdEndGame()
     {
-        serverLogic.gameStarted = false;
+        serverLogic.GameStarted = false;
     }
 }
