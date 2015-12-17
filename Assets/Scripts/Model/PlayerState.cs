@@ -11,7 +11,6 @@ public class PlayerState : NetworkBehaviour
 
 	// The number of times a player has cheated
 	public int Cheated;
-
 	public int Team;  
 
     [SerializeField]
@@ -64,14 +63,7 @@ public class PlayerState : NetworkBehaviour
             SceneCamera.gameObject.SetActive(true);
         }
     }
-
-	void Update() {
-		if (Input.GetKeyDown ("n")) {
-			Debug.Log (Team + " T-P " + ProfileIndex + " ("+SelectedAttributes.Count+")");
-//			SelectedAttributes.ForEach(a => Debug.Log(a.ToFriendlyString()));
-		}
-	}
-
+	
 	public Profile GetProfile() {
 		return ServerLogic.Profiles[ProfileIndex];
 	}
@@ -89,7 +81,8 @@ public class PlayerState : NetworkBehaviour
 		GameObject theObject = NetworkServer.FindLocalObject(netID);
 
 		if (++theObject.GetComponent<UnlockableDoor> ().Counter == 3)
-			theObject.GetComponent<UnlockableDoor>().RpcSetActive(false);
+			NetworkManager.Destroy (theObject);
+//			theObject.GetComponent<UnlockableDoor>().RpcSetActive(false);
 	}
 
 	[Command]

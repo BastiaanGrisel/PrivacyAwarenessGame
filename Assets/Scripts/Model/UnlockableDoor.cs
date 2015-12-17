@@ -7,43 +7,36 @@ public class UnlockableDoor : NetworkBehaviour {
 
 	[SyncVar]
 	public int Counter;
-
-	public List<LockCube> Locks = new List<LockCube> ();
-
-	private ServerLogic ServerLogic;
-
+	public List<GameObject> Locks;
+	
 	void Awake() {
 		Counter = 0;
 	}
 
-	void Start() {
-		ServerLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
+	[Server]
+	void InitializeDoor() {
+		List<ProfileAttribute> RandomAttributes = new List<ProfileAttribute> ();
+		ProfileAttribute attr;
+		
+		foreach(GameObject l in Locks) {
+			do {
+				attr = (ProfileAttribute)UnityEngine.Random.Range (0, Profile.TotalNumberOfAttributes ());
+			} while (RandomAttributes.Contains(attr));
 
-		if (isServer) {
-			List<ProfileAttribute> RandomAttributes = new List<ProfileAttribute> ();
-			ProfileAttribute attr;
+			RandomAttributes.Add (attr);
+			l.GetComponent<LockCube>().RpcSetKey(attr);
+		}
+	}
 
-			for (int i = 0; i < Locks.Count; i++) {
-				do {
-					attr = (ProfileAttribute)UnityEngine.Random.Range (0, Profile.TotalNumberOfAttributes ());
-				} while (RandomAttributes.Contains(attr));
-
-				RandomAttributes.Add (attr);
-				Locks[i].Key = attr;
-//				Locks [i].SetKey (attr);
-//				Locks [i].ShowText (attr.ToFriendlyString ());
-			}
+	void Update() {
+		if (Input.GetKeyDown (KeyCode.Return) && isServer) {
+			InitializeDoor();
 		}
 	}
 	
-	public void RegisterLock(LockCube l) {
-		Locks.Add (l);
-	}
-
 	[ClientRpc]
 	public void RpcSetActive (bool on) {
 		gameObject.GetComponent<MeshRenderer> ().enabled = on;
 		gameObject.GetComponent<BoxCollider> ().enabled = on;
-
 	}
 }

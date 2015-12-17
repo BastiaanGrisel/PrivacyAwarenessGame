@@ -10,9 +10,9 @@ public class ResetDoorCube : NetworkBehaviour {
 		if (collision.gameObject.tag == "Player") {
 			collision.gameObject.GetComponent<PlayerState>().CmdResetLocks(
 				Door.GetComponent<UnlockableDoor>().netId,
-				Door.GetComponent<UnlockableDoor>().Locks[0].netId,
-				Door.GetComponent<UnlockableDoor>().Locks[1].netId,
-				Door.GetComponent<UnlockableDoor>().Locks[2].netId);
+				Door.GetComponent<UnlockableDoor>().Locks[0].GetComponent<LockCube>().netId,
+				Door.GetComponent<UnlockableDoor>().Locks[1].GetComponent<LockCube>().netId,
+				Door.GetComponent<UnlockableDoor>().Locks[2].GetComponent<LockCube>().netId);
 		}
 	}
 

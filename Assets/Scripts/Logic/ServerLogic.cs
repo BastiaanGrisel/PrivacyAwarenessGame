@@ -13,20 +13,6 @@ public class ServerLogic : NetworkBehaviour
 
     // Game properties
     public List<Profile> Profiles = new List<Profile>();
-    private List<KeyValuePair<int, int>> unassignedAttributes = new List<KeyValuePair<int, int>>();
-
-	public List<string> Categories = new List<string> {
-		"Email",
-		"School",
-		"Hobby",
-		"Muziek",
-		"Film",
-		"Postcode",
-		"Relatie",
-		"Eten",
-		"Hond",
-		"Restaurant"
-	};
 
     public void Awake()
     {
@@ -43,44 +29,12 @@ public class ServerLogic : NetworkBehaviour
 		Profiles.Add(new Profile(){"hallodaar!@party.com", "CBS De Acker", "Tennis", "Adele", "Peter Pan", "8062 MW", "Gescheiden", "Chili con carne", "Nero", "Restaurant"});
 
 		Players = new List<PlayerState> ();
-
-        // Generate random pairs of <int, int> that define which attributes should be contained in the game.
-        // The KeyValue Pair represents the collumn and row of the matrix above.
-//        for (int iAttributes = 0; iAttributes < nAttributes; iAttributes++)
-//            unassignedAttributes.Add(new KeyValuePair<int, int>(iAttributes, rnd.Next(0, profiles.Count-1)));
     }
-
-//	public void Start() {
-//		NetMgr = GameObject.Find ("Network Manager").GetComponent<NetworkManager> ();
-//	}
-
+	
     // Dynamically assigns a Player certain data.
     public void RegisterPlayer(PlayerState player)
     {
 		Players.Add (player);
-        // Pseudorandomnumber generator
-//        System.Random rnd = new System.Random();
-
-        // Add a Tag3D to the player
-        // [Todo] Add the player name that is entered by the user itself.
-//        player.gameObject.AddComponent<Tag3D>();
-
-        // Fill in the profile of the new player
-//		Profile profile = new Profile ();
-//        for (uint i = 0; i < 3; i++)
-//        {
-//            KeyValuePair<int, int> pair;
-//            if (unassignedAttributes.Count == 0)
-//                pair = new KeyValuePair<int, int>(rnd.Next(0, nAttributes), rnd.Next(0, profiles.Count-1));
-//            else
-//                pair = unassignedAttributes[rnd.Next(0, unassignedAttributes.Count-1)];
-//            
-//            // Set the field of the Profile.
-//            profile.SetField(pair.Key, profiles[pair.Value].GetField(pair.Key));
-//        }
-
-        // Assign a profile to the player.
-//        player.Profile = profile;
     }
 
 	public void DeRegisterPlayer(PlayerState player) {
@@ -93,7 +47,7 @@ public class ServerLogic : NetworkBehaviour
         if (isServer && Input.GetKeyDown (KeyCode.Return) && !GameStarted)
 			StartGame ();
 	}
-
+	
 	[Server]
 	void StartGame() {
 		// Calculate the amount of attributes each player needs to get to ensure allt he attributes are in the game
@@ -109,7 +63,7 @@ public class ServerLogic : NetworkBehaviour
 
 			for(int j = 0; j < AttributesPerPlayer; j++) {
 				if(AttributesNotYetInGame.Any ()) {
-					// Add an attribute to the player
+					// Add an attribute to the player (and to the players of the other players since SelectedAttributed is a SyncList)
 					Players[i].SelectedAttributes.Add ((int) AttributesNotYetInGame[0]);
 					// Delete it from the list of attributes that are not yet in the game
 					AttributesNotYetInGame.RemoveAt(0);

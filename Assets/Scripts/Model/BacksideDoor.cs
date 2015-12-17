@@ -12,4 +12,5 @@ public class BacksideDoor : MonoBehaviour {
 	void OnTriggerExit(Collider other) {
 		Door.GetComponent<BoxCollider> ().enabled = true;
 	}
+
 }
