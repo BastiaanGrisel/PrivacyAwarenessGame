@@ -43,7 +43,7 @@ public class LockCube : NetworkBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerState> ().GetProfile()[(int) Key] != null) {
+		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerState> ().SelectedAttributes.Contains(Key)) {
 			other.gameObject.GetComponent<PlayerState>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
 			other.gameObject.GetComponent<PlayerState>().CmdDestroyLockCube(netId);
 		}

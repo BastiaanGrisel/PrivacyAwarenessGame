@@ -7,7 +7,7 @@ public class PlayerState : NetworkBehaviour
 {
     // Profile that the player is using
     [SyncVar] public int ProfileIndex;
-	public List<int> SelectedAttributes = new List<int>();
+	public List<ProfileAttribute> SelectedAttributes = new List<ProfileAttribute>();
 
 	// The number of times a player has cheated
 	public int Cheated = 0;
@@ -62,7 +62,7 @@ public class PlayerState : NetworkBehaviour
 	void Update() {
 		if (Input.GetKeyDown ("n")) {
 			Debug.Log (Team + " T-P " + ProfileIndex);
-			SelectedAttributes.ForEach(a => Debug.Log(a.ToString()));
+			SelectedAttributes.ForEach(a => Debug.Log(a.ToFriendlyString()));
 		}
 	}
 
