@@ -110,12 +110,12 @@ public class ServerLogic : NetworkBehaviour
 			for(int j = 0; j < AttributesPerPlayer; j++) {
 				if(AttributesNotYetInGame.Any ()) {
 					// Add an attribute to the player
-					Players[i].SelectedAttributes.Add (AttributesNotYetInGame[0]);
+					Players[i].SelectedAttributes.Add ((int) AttributesNotYetInGame[0]);
 					// Delete it from the list of attributes that are not yet in the game
 					AttributesNotYetInGame.RemoveAt(0);
 				} else {
 					// Add a random attribute that that player does not already have
-					Players[i].SelectedAttributes.Add (AllAttributes.Find(a => !Players[i].SelectedAttributes.Contains(a)));
+					Players[i].SelectedAttributes.Add ((int) AllAttributes.Find(a => !Players[i].SelectedAttributes.Contains((int) a)));
 				}
 			}
 

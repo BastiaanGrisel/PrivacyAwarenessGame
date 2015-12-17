@@ -7,10 +7,10 @@ public class PlayerState : NetworkBehaviour
 {
     // Profile that the player is using
     [SyncVar] public int ProfileIndex;
-	public List<ProfileAttribute> SelectedAttributes = new List<ProfileAttribute>();
+	public SyncListInt SelectedAttributes;
 
 	// The number of times a player has cheated
-	public int Cheated = 0;
+	public int Cheated;
 
 	public int Team;  
 
@@ -19,9 +19,15 @@ public class PlayerState : NetworkBehaviour
     private Camera SceneCamera;
 
 	public GameObject KeysHUD;
-    public List<int> keys = new List<int>();
+	public List<int> Keys;
 
 	private ServerLogic ServerLogic;
+
+	void Awake() {
+		SelectedAttributes = new SyncListInt();
+		Keys = new List<int>();
+		Cheated = 0;
+	}
 
     void Start ()
     {
@@ -45,8 +51,8 @@ public class PlayerState : NetworkBehaviour
             }
 
 			GameObject ui = Instantiate(KeysHUD);
-			for (int i = 0; i < keys.Count; i++) {
-				ui.GetComponent<HUDKeys>().KeyTexts[i].text = keys[i].ToString();
+			for (int i = 0; i < Keys.Count; i++) {
+				ui.GetComponent<HUDKeys>().KeyTexts[i].text = Keys[i].ToString();
 			}
         }
 	}
@@ -61,8 +67,8 @@ public class PlayerState : NetworkBehaviour
 
 	void Update() {
 		if (Input.GetKeyDown ("n")) {
-			Debug.Log (Team + " T-P " + ProfileIndex);
-			SelectedAttributes.ForEach(a => Debug.Log(a.ToFriendlyString()));
+			Debug.Log (Team + " T-P " + ProfileIndex + " ("+SelectedAttributes.Count+")");
+//			SelectedAttributes.ForEach(a => Debug.Log(a.ToFriendlyString()));
 		}
 	}
 

@@ -36,14 +36,15 @@ public class LockCube : NetworkBehaviour {
 
 	public void SetKey(ProfileAttribute k) {
 		Key = k;
+		gameObject.GetComponent<TextMesh> ().text = k.ToFriendlyString();
 	}
 
-	public void ShowText(string t) {
-		gameObject.GetComponent<TextMesh> ().text = t;
-	}
+//	public void ShowText(string t) {
+//		gameObject.GetComponent<TextMesh> ().text = t;
+//	}
 
 	void OnTriggerEnter(Collider other) {
-		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerState> ().SelectedAttributes.Contains(Key)) {
+		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerState> ().SelectedAttributes.Contains((int) Key)) {
 			other.gameObject.GetComponent<PlayerState>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
 			other.gameObject.GetComponent<PlayerState>().CmdDestroyLockCube(netId);
 		}
