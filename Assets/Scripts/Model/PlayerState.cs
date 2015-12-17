@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.Networking;
-using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class PlayerState : NetworkBehaviour
 {
     // Profile that the player is using
     [SyncVar] public int ProfileIndex;
+	public List<int> SelectedAttributes = new List<int>();
 
 	// The number of times a player has cheated
 	public int Cheated = 0;
@@ -58,6 +59,7 @@ public class PlayerState : NetworkBehaviour
 	void Update() {
 		if (Input.GetKeyDown ("n")) {
 			Debug.Log (Team + " T-P " + ProfileIndex);
+			SelectedAttributes.ForEach(a => Debug.Log(a.ToString()));
 		}
 	}
 

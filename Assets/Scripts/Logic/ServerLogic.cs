@@ -97,12 +97,27 @@ public class ServerLogic : NetworkBehaviour
 	[Server]
 	void StartGame() {
 		// Assign a profile to every player
-		for (int i = 0; i < Players.Count; i++) {
-			Players[i].ProfileIndex = i;
-		}
+		int AttributesPerPlayer = (int) Math.Max (3, Math.Ceiling ((double) Profile.TotalNumberOfAttributes() / (double) Players.Count));
+		// Generate a list of all the attributes in random order
+		List<ProfileAttribute> AllAttributes = Enum.GetValues(typeof(ProfileAttribute)).Cast<ProfileAttribute>().OrderBy(a => UnityEngine.Random.value).ToList ();
+		List<ProfileAttribute> AttributesNotYetInGame = new List<ProfileAttribute> (AllAttributes);
 
-		// Assign a team to every player (0 or 1)
 		for (int i = 0; i < Players.Count; i++) {
+
+			Players[i].ProfileIndex = i;
+
+			for(int j = 0; j < AttributesPerPlayer; j++) {
+				if(AttributesNotYetInGame.Any ()) {
+					// Add an attribute to the player
+					Players[i].SelectedAttributes.Add ((int) AttributesNotYetInGame[0]);
+					// Delete it from the list of attributes that are not yet in the game
+					AttributesNotYetInGame.RemoveAt(0);
+				} else {
+					// Add a random attribute that that player does not already have
+					Players[i].SelectedAttributes.Add ((int) AllAttributes.Find(a => !Players[i].SelectedAttributes.Contains((int) a)));
+				}
+			}
+
 			Players[i].Team = i % 2;
 		}
 

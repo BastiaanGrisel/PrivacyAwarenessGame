@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public enum ProfileAttributes { Email, School, Hobby, FavoriteArtist, FavoriteMovie, ZipCode, SocialStatus, FavoriteFood, Pet, Job }
+public enum ProfileAttribute: int { Email, School, Hobby, FavoriteArtist, FavoriteMovie, ZipCode, SocialStatus, FavoriteFood, Pet, Job }
 
 public class Profile : List<string>
 {
@@ -13,7 +13,7 @@ public class Profile : List<string>
 	}
 	
 	public static int TotalNumberOfAttributes() {
-		return Enum.GetNames (typeof(ProfileAttributes)).Length;
+		return Enum.GetNames (typeof(ProfileAttribute)).Length;
 	}
 	
 //	public List<string> Attributes;
