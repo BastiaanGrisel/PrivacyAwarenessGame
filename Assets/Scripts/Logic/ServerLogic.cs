@@ -25,6 +25,8 @@ public class ServerLogic : NetworkBehaviour
 		"Restaurant"
 	};
 
+    public GameObject dataExchangePanel;
+
     public void Awake()
     {
         // Pseudorandomnumber generator
@@ -46,6 +48,9 @@ public class ServerLogic : NetworkBehaviour
         // The KeyValue Pair represents the collumn and row of the matrix above.
         for (int iAttributes = 0; iAttributes < nAttributes; iAttributes++)
             unassignedAttributes.Add(new KeyValuePair<int, int>(iAttributes, rnd.Next(0, profiles.Count-1)));
+
+        dataExchangePanel = GameObject.Find("DataExchangePanel");
+        dataExchangePanel.SetActive(false);
     }
 
     // Dynamically assigns a Player certain data.
