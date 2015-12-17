@@ -19,17 +19,17 @@ public class UnlockableDoor : NetworkBehaviour {
 	void Start() {
 		ServerLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
 
-		List<int> RandomNumbers = new List<int>();
-		int rnd;
+		List<ProfileAttribute> RandomAttributes = new List<ProfileAttribute>();
+		ProfileAttribute attr;
 
 		for(int i = 0; i < Locks.Count; i++) {
 			do {
-				rnd = UnityEngine.Random.Range(0, ServerLogic.Categories.Count);
-			} while (RandomNumbers.Contains(rnd));
+				attr = (ProfileAttribute) UnityEngine.Random.Range(0, Profile.TotalNumberOfAttributes());
+			} while (RandomAttributes.Contains(attr));
 
-			RandomNumbers.Add(rnd);
-			Locks[i].SetKey(rnd);
-			Locks[i].ShowText(ServerLogic.Categories[rnd]);
+			RandomAttributes.Add(attr);
+			Locks[i].SetKey(attr);
+			Locks[i].ShowText(attr.ToFriendlyString());
 		}
 	}
 	

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class LockCube : NetworkBehaviour {
 
 	[SyncVar(hook = "SetKey")] 
-	public int Key;
+	public ProfileAttribute Key;
 
 	public GameObject Door;
 
@@ -34,7 +34,7 @@ public class LockCube : NetworkBehaviour {
 		gameObject.SetActive (on);
 	}
 
-	public void SetKey(int k) {
+	public void SetKey(ProfileAttribute k) {
 		Key = k;
 	}
 
@@ -43,9 +43,8 @@ public class LockCube : NetworkBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerState> ().keys.Contains (Key)) {
-				other.gameObject.GetComponent<PlayerState>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
-
+		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerState> ().GetProfile()[(int) Key] != null) {
+			other.gameObject.GetComponent<PlayerState>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
 			other.gameObject.GetComponent<PlayerState>().CmdDestroyLockCube(netId);
 		}
 	}

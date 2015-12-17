@@ -21,9 +21,12 @@ public class PlayerState : NetworkBehaviour
 	public GameObject KeysHUD;
     public List<int> keys = new List<int>();
 
+	private ServerLogic ServerLogic;
+
     void Start ()
     {
-        GameObject.Find("Game").GetComponent<ServerLogic>().RegisterPlayer(this);
+		ServerLogic = GameObject.Find ("Game").GetComponent<ServerLogic> ();
+		ServerLogic.RegisterPlayer(this);
 
         if (!isLocalPlayer)
         {
@@ -63,6 +66,10 @@ public class PlayerState : NetworkBehaviour
 		}
 	}
 
+	public Profile GetProfile() {
+		return ServerLogic.Profiles[ProfileIndex];
+	}
+
 	[Command]
 	public void CmdDestroyLockCube(NetworkInstanceId netID)
 	{
@@ -90,15 +97,15 @@ public class PlayerState : NetworkBehaviour
 		door.GetComponent<UnlockableDoor> ().Counter = 0;
 
 		GameObject lock1 = NetworkServer.FindLocalObject(netID1);
-		lock1.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
+		lock1.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
 		lock1.GetComponent<LockCube> ().RpcSetActive (true);
 
 		GameObject lock2 = NetworkServer.FindLocalObject(netID2);
-		lock2.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
+		lock2.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
 		lock2.GetComponent<LockCube> ().RpcSetActive (true);
 
 		GameObject lock3 = NetworkServer.FindLocalObject(netID3);
-		lock3.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
+		lock3.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
 		lock3.GetComponent<LockCube> ().RpcSetActive (true);
 	}
 }

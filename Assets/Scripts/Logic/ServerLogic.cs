@@ -12,7 +12,7 @@ public class ServerLogic : NetworkBehaviour
 	private List<PlayerState> Players;
 
     // Game properties
-    private List<Profile> Profiles = new List<Profile>();
+    public List<Profile> Profiles = new List<Profile>();
     private List<KeyValuePair<int, int>> unassignedAttributes = new List<KeyValuePair<int, int>>();
 
 	public List<string> Categories = new List<string> {
@@ -96,8 +96,9 @@ public class ServerLogic : NetworkBehaviour
 
 	[Server]
 	void StartGame() {
-		// Assign a profile to every player
+		// Calculate the amount of attributes each player needs to get to ensure allt he attributes are in the game
 		int AttributesPerPlayer = (int) Math.Max (3, Math.Ceiling ((double) Profile.TotalNumberOfAttributes() / (double) Players.Count));
+
 		// Generate a list of all the attributes in random order
 		List<ProfileAttribute> AllAttributes = Enum.GetValues(typeof(ProfileAttribute)).Cast<ProfileAttribute>().OrderBy(a => UnityEngine.Random.value).ToList ();
 		List<ProfileAttribute> AttributesNotYetInGame = new List<ProfileAttribute> (AllAttributes);
@@ -118,6 +119,7 @@ public class ServerLogic : NetworkBehaviour
 				}
 			}
 
+			// Assign each player a team
 			Players[i].Team = i % 2;
 		}
 
