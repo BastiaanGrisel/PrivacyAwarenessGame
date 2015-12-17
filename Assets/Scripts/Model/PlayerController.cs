@@ -72,8 +72,8 @@ public class PlayerController : NetworkBehaviour
         {
             Text dataExchangeGUIText = GameObject.Find("DataExchangePlayerIDText").GetComponent<Text>();
             dataExchangeGUIText.text = c.gameObject.GetInstanceID().ToString();
-            GameObject dataExchangeGUI = GameObject.Find("DataExchangeGUI");
-            dataExchangeGUI.GetComponent<DataExchangeGUI>().otherPlayer = c.gameObject.GetInstanceID();
+            GameObject dataExchangeGUI = GameObject.Find("DataExchangePanel");
+            dataExchangeGUI.GetComponent<DataExchangePanel>().otherPlayer = c.gameObject.GetInstanceID();
             dataExchangeGUI.SetActive(true);
         }
     }
