@@ -12,19 +12,19 @@ public class PlayerState : NetworkBehaviour
 	// The number of times a player has cheated
 	public int Cheated;
 	public int Team;  
+	public SyncListInt Route;
 
     [SerializeField]
 	private Behaviour[] ComponentsToDisable;
     private Camera SceneCamera;
 
 	public GameObject KeysHUD;
-	public List<int> Keys;
 
 	private ServerLogic ServerLogic;
 
 	void Awake() {
 		SelectedAttributes = new SyncListInt();
-		Keys = new List<int>();
+		Route = new SyncListInt ();
 		Cheated = 0;
 	}
 
@@ -50,10 +50,12 @@ public class PlayerState : NetworkBehaviour
             }
 
 			GameObject ui = Instantiate(KeysHUD);
-			for (int i = 0; i < Keys.Count; i++) {
-				ui.GetComponent<HUDKeys>().KeyTexts[i].text = Keys[i].ToString();
-			}
         }
+	}
+
+	void Update(){
+		if (Input.GetKeyDown ("v"))
+			Debug.Log (Route [0] + ", " + Route [1] + ", " + Route [2] + ", " + Route [3]);
 	}
 
     void OnDisable()
