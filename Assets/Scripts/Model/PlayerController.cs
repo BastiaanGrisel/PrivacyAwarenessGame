@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -13,18 +13,18 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private PlayerMotor motor;
     private ServerLogic serverLogic;
-    private GameObject dataExchangePanel;
+    private GameObject DataExchangePanel;
 
     void Awake()
     {
 		motor = GetComponent<PlayerMotor>();
         serverLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
-        dataExchangePanel = serverLogic.dataExchangePanel;
+        DataExchangePanel = serverLogic.DataExchangePanel;
     }
 
     void Update()
     {
-        if (serverLogic.gameStarted)
+        if (serverLogic.GameStarted)
         {
             // Calculate velocity as a 3D vector
             float xMov = Input.GetAxisRaw("Horizontal");
@@ -72,17 +72,17 @@ public class PlayerController : NetworkBehaviour
 
         if (c.gameObject.tag == "Player")
         {
-            Transform text = dataExchangePanel.transform.Find("DataExchangePlayerIDText");
+            Transform text = DataExchangePanel.transform.Find("DataExchangePlayerIDText");
             Text dataExchangeGUIText = text.GetComponent<Text>();
             dataExchangeGUIText.text = c.gameObject.GetInstanceID().ToString();
-            dataExchangePanel.GetComponent<DataExchangePanel>().otherPlayer = c.gameObject.GetInstanceID();
-            dataExchangePanel.gameObject.SetActive(true);
+            DataExchangePanel.GetComponent<DataExchangePanel>().otherPlayer = c.gameObject.GetInstanceID();
+            DataExchangePanel.gameObject.SetActive(true);
         }
     }
 
     [Command]
     public void CmdEndGame()
     {
-        serverLogic.gameStarted = false;
+        serverLogic.GameStarted = false;
     }
 }

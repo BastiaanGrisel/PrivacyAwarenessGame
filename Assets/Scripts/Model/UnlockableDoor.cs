@@ -7,39 +7,36 @@ public class UnlockableDoor : NetworkBehaviour {
 
 	[SyncVar]
 	public int Counter;
-
-	public List<LockCube> Locks = new List<LockCube> ();
-
-	private ServerLogic ServerLogic;
-
+	public List<GameObject> Locks;
+	
 	void Awake() {
 		Counter = 0;
-		ServerLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
 	}
 
-	void Start() {
-		List<int> RandomNumbers = new List<int>();
-		int rnd;
-
-		for(int i = 0; i < Locks.Count; i++) {
+	[Server]
+	void InitializeDoor() {
+		List<ProfileAttribute> RandomAttributes = new List<ProfileAttribute> ();
+		ProfileAttribute attr;
+		
+		foreach(GameObject l in Locks) {
 			do {
-				rnd = UnityEngine.Random.Range(0, ServerLogic.Categories.Count);
-			} while (RandomNumbers.Contains(rnd));
+				attr = (ProfileAttribute)UnityEngine.Random.Range (0, Profile.TotalNumberOfAttributes ());
+			} while (RandomAttributes.Contains(attr));
 
-			RandomNumbers.Add(rnd);
-			Locks[i].SetKey(rnd);
-			Locks[i].ShowText(ServerLogic.Categories[rnd]);
+			RandomAttributes.Add (attr);
+			l.GetComponent<LockCube>().RpcSetKey(attr);
+		}
+	}
+
+	void Update() {
+		if (Input.GetKeyDown (KeyCode.Return) && isServer) {
+			InitializeDoor();
 		}
 	}
 	
-	public void RegisterLock(LockCube l) {
-		Locks.Add (l);
-	}
-
 	[ClientRpc]
 	public void RpcSetActive (bool on) {
 		gameObject.GetComponent<MeshRenderer> ().enabled = on;
 		gameObject.GetComponent<BoxCollider> ().enabled = on;
-
 	}
 }

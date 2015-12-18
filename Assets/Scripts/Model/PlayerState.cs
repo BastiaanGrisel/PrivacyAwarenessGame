@@ -1,51 +1,74 @@
 using UnityEngine;
 using UnityEngine.Networking;
-using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class PlayerState : NetworkBehaviour
 {
     // Profile that the player is using
-    public Profile profile;
+    [SyncVar] public int ProfileIndex;
+	public SyncListInt SelectedAttributes;
+
+	// The number of times a player has cheated
+	public int Cheated;
+	public int Team;  
+	public SyncListInt Route;
 
     [SerializeField]
-	private Behaviour[] componentsToDisable;
-    private Camera sceneCamera;
+	private Behaviour[] ComponentsToDisable;
+    private Camera SceneCamera;
 
-	public GameObject HealthUI;
-    public List<int> keys = new List<int>();
+	public GameObject KeysHUD;
+
+	private ServerLogic ServerLogic;
+
+	void Awake() {
+		SelectedAttributes = new SyncListInt();
+		Route = new SyncListInt ();
+		Cheated = 0;
+	}
 
     void Start ()
     {
-        GameObject.Find("Game").GetComponent<ServerLogic>().InitializePlayer(this);
+		ServerLogic = GameObject.Find ("Game").GetComponent<ServerLogic> ();
+		ServerLogic.RegisterPlayer(this);
+
         if (!isLocalPlayer)
         {
-            foreach (Behaviour comp in componentsToDisable){
+			this.gameObject.AddComponent<Tag3D>();
+
+            foreach (Behaviour comp in ComponentsToDisable){
                 comp.enabled = false;
             }
         }
         else
         {
-            sceneCamera = Camera.main;
-            if (sceneCamera != null)
+            SceneCamera = Camera.main;
+            if (SceneCamera != null)
             {
-                sceneCamera.gameObject.SetActive(false);
+                SceneCamera.gameObject.SetActive(false);
             }
 
-			GameObject ui = Instantiate(HealthUI);
-			for (int i = 0; i < keys.Count; i++) {
-				ui.GetComponent<HUDKeys>().KeyTexts[i].text = keys[i].ToString();
-			}
+			GameObject ui = Instantiate(KeysHUD);
         }
+	}
+
+	void Update(){
+		if (Input.GetKeyDown ("v"))
+			Debug.Log (Route [0] + ", " + Route [1] + ", " + Route [2] + ", " + Route [3]);
 	}
 
     void OnDisable()
     {
-        if (sceneCamera != null)
+        if (SceneCamera != null)
         {
-            sceneCamera.gameObject.SetActive(true);
+            SceneCamera.gameObject.SetActive(true);
         }
     }
+	
+	public Profile GetProfile() {
+		return ServerLogic.Profiles[ProfileIndex];
+	}
 
 	[Command]
 	public void CmdDestroyLockCube(NetworkInstanceId netID)
@@ -60,7 +83,8 @@ public class PlayerState : NetworkBehaviour
 		GameObject theObject = NetworkServer.FindLocalObject(netID);
 
 		if (++theObject.GetComponent<UnlockableDoor> ().Counter == 3)
-			theObject.GetComponent<UnlockableDoor>().RpcSetActive(false);
+			NetworkManager.Destroy (theObject);
+//			theObject.GetComponent<UnlockableDoor>().RpcSetActive(false);
 	}
 
 	[Command]
@@ -74,15 +98,15 @@ public class PlayerState : NetworkBehaviour
 		door.GetComponent<UnlockableDoor> ().Counter = 0;
 
 		GameObject lock1 = NetworkServer.FindLocalObject(netID1);
-		lock1.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
+		lock1.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
 		lock1.GetComponent<LockCube> ().RpcSetActive (true);
 
 		GameObject lock2 = NetworkServer.FindLocalObject(netID2);
-		lock2.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
+		lock2.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
 		lock2.GetComponent<LockCube> ().RpcSetActive (true);
 
 		GameObject lock3 = NetworkServer.FindLocalObject(netID3);
-		lock3.GetComponent<LockCube> ().Key = rnd.Next (1, 4);
+		lock3.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
 		lock3.GetComponent<LockCube> ().RpcSetActive (true);
 	}
 }
