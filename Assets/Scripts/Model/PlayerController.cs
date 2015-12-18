@@ -28,14 +28,21 @@ public class PlayerController : NetworkBehaviour
 		motor = GetComponent<PlayerMotor>();
 		state = GetComponent<PlayerState>();
         serverLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
-        DataExchangeCanvas = Instantiate(DataExchangeCanvasPrefab) as GameObject;
-        foreach (ProfileAttribute a in Enum.GetValues(typeof(ProfileAttribute)))
+    }
+
+    void Start()
+    {
+        if (isLocalPlayer)
         {
-            GameObject newButton = Instantiate(QuestionButtonPrefab) as GameObject;
-            Transform QuestionsPanel = DataExchangeCanvas.transform.Find("Panel").Find("ScrollView").Find("QuestionsPanel");
-            newButton.transform.parent = QuestionsPanel;
+            DataExchangeCanvas = Instantiate(DataExchangeCanvasPrefab) as GameObject;
+            foreach (ProfileAttribute a in Enum.GetValues(typeof(ProfileAttribute)))
+            {
+                GameObject newButton = Instantiate(QuestionButtonPrefab) as GameObject;
+                Transform QuestionsPanel = DataExchangeCanvas.transform.Find("DataExchangePanel").Find("Panel").Find("ScrollView").Find("QuestionsPanel");
+                newButton.transform.parent = QuestionsPanel;
+            }
+            DataExchangeCanvas.SetActive(false);
         }
-        DataExchangeCanvas.SetActive(false);
     }
 
     void Update()
@@ -79,6 +86,9 @@ public class PlayerController : NetworkBehaviour
 
     void OnCollisionEnter(Collision c)
     {
+        // Also when the controller is disabled it will enter the OnCollisionEnter.
+        if (!isLocalPlayer)
+            return;
         if (c.gameObject.tag == "Trophy" && state.Route.Count > 0 && c.gameObject.GetComponent<Trophy> ().Number == state.Route [0]) {
 
 			c.gameObject.SetActive(false);
@@ -94,9 +104,8 @@ public class PlayerController : NetworkBehaviour
 //                this.CmdEndGame();
 //        }
 
-        if (c.gameObject.tag == "Player")
+        if (c.gameObject.tag == "Player" || true)
         {
-            
             Transform panel = DataExchangeCanvas.transform.Find("DataExchangePanel");
             Text dataExchangeGUIText = panel.transform.Find("DataExchangePlayerIDText").GetComponent<Text>();
             dataExchangeGUIText.text = c.gameObject.GetInstanceID().ToString();
