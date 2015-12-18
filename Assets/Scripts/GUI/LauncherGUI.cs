@@ -9,7 +9,6 @@ public class LauncherGUI : MonoBehaviour
     private Button joinGame;
     private Button settings;
     private Button exit;
-    private InputField networkAddress;
 
     // Networking Attributes
     private NetworkManager manager;
@@ -26,14 +25,13 @@ public class LauncherGUI : MonoBehaviour
         hostGame.onClick.AddListener(() =>
         {
             manager.StartHost();
-            gameObject.SetActive(false);
+
         });
 
         joinGame.onClick.AddListener(() =>
         {
             manager.networkAddress = GameObject.Find("IP").GetComponent<InputField>().text;
             manager.StartClient();
-            gameObject.SetActive(false);
         });
 
         settings.onClick.AddListener(() =>
@@ -46,5 +44,10 @@ public class LauncherGUI : MonoBehaviour
         {
             Application.Quit();
         });
+    }
+
+    void OnPlayerConnected(NetworkPlayer player)
+    {
+
     }
 }

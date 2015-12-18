@@ -8,6 +8,7 @@ public class PlayerState : NetworkBehaviour
     // Profile that the player is using
     [SyncVar] public int ProfileIndex;
 	public SyncListInt SelectedAttributes;
+    [SyncVar] public string username;
 
 	// The number of times a player has cheated
 	public int Cheated;
@@ -31,15 +32,13 @@ public class PlayerState : NetworkBehaviour
 		Cheated = 0;
 	}
 
-    void Start ()
+    void Start()
     {
 		ServerLogic = GameObject.Find ("Game").GetComponent<ServerLogic> ();
 		ServerLogic.RegisterPlayer(this);
 
         if (!isLocalPlayer)
         {
-			this.gameObject.AddComponent<Tag3D>();
-
             foreach (Behaviour comp in ComponentsToDisable){
                 comp.enabled = false;
             }
@@ -51,12 +50,17 @@ public class PlayerState : NetworkBehaviour
             {
                 SceneCamera.gameObject.SetActive(false);
             }
-			ScoreBoardInstance = Instantiate(ScoreBoard);
-
-//			GameObject ui = Instantiate(KeysHUD);
         }
 
-	}
+        ScoreBoardInstance = Instantiate(ScoreBoard);
+        setPlayerTag();
+    }
+
+    public void setPlayerTag()
+    {
+        this.gameObject.AddComponent<Tag3D>();
+        this.gameObject.GetComponent<Tag3D>().tagText = username;
+    }
 
 	void Update(){
 		if (Input.GetKeyDown ("v"))

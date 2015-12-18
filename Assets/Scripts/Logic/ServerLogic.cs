@@ -38,6 +38,8 @@ public class ServerLogic : NetworkBehaviour
 		Players = new List<PlayerState> ();
     }
 	
+
+
     // Dynamically assigns a Player certain data.
     public void RegisterPlayer(PlayerState player)
     {
