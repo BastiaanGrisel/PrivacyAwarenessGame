@@ -81,14 +81,14 @@ public class PlayerController : NetworkBehaviour
 //                this.CmdEndGame();
 //        }
 
-//        if (c.gameObject.tag == "Player")
-//        {
-//            Transform text = DataExchangePanel.transform.Find("DataExchangePlayerIDText");
-//            Text dataExchangeGUIText = text.GetComponent<Text>();
-//            dataExchangeGUIText.text = c.gameObject.GetInstanceID().ToString();
-//            DataExchangePanel.GetComponent<DataExchangePanel>().otherPlayer = c.gameObject.GetInstanceID();
-//            DataExchangePanel.gameObject.SetActive(true);
-//        }
+        if (c.gameObject.tag == "Player")
+        {
+            Transform text = DataExchangePanel.transform.Find("DataExchangePlayerIDText");
+            Text dataExchangeGUIText = text.GetComponent<Text>();
+            dataExchangeGUIText.text = c.gameObject.GetInstanceID().ToString();
+            DataExchangePanel.GetComponent<DataExchangePanel>().otherPlayer = c.gameObject.GetInstanceID();
+            DataExchangePanel.gameObject.SetActive(true);
+        }
     }
 
     [Command]
