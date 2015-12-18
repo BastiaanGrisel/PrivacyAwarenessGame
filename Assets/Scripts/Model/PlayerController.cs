@@ -5,14 +5,16 @@ using UnityEngine.UI;
 using System;
 
 [RequireComponent(typeof(PlayerMotor))]
+[RequireComponent(typeof(PlayerState))]
 public class PlayerController : NetworkBehaviour
 {
     [SerializeField]
     private float speed = 5f;
     [SerializeField]
     private float mouseSensitivity = 3f;
-    [SerializeField]
-    private PlayerMotor motor;
+
+	private PlayerMotor motor;
+	private PlayerState state;
     private ServerLogic serverLogic;
     private GameObject DataExchangeCanvas;
     [SerializeField]
@@ -21,9 +23,11 @@ public class PlayerController : NetworkBehaviour
     private GameObject QuestionButtonPrefab;
     private GameObject Canvas;
 
+
     void Awake()
     {
 		motor = GetComponent<PlayerMotor>();
+		state = GetComponent<PlayerState>();
         serverLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
         Canvas = Instantiate(DataExchangeCanvasPrefab) as GameObject;
         foreach (ProfileAttribute attr in Enum.GetValues(typeof(ProfileAttribute)))
@@ -76,12 +80,20 @@ public class PlayerController : NetworkBehaviour
 
     void OnCollisionEnter(Collision c)
     {
-        if (c.gameObject.tag == "Trophy" && ((Trophy)c.gameObject.GetComponent<Trophy>()).isWinningTrophy)
-        {
-            c.gameObject.SetActive(false);
-            if (GameObject.FindGameObjectsWithTag("Trophy").Length == 0)
-                this.CmdEndGame();
-        }
+        if (c.gameObject.tag == "Trophy" && state.Route.Count > 0 && c.gameObject.GetComponent<Trophy> ().Number == state.Route [0]) {
+
+			c.gameObject.SetActive(false);
+			state.Route.RemoveAt(0);
+
+			if(state.Route.Count == 0) {
+				state.ScoreBoardInstance.GetComponentInChildren<Score>().AddOnePointTo(state.Team);
+			}
+		}
+//        {
+//            c.gameObject.SetActive(false);
+//            if (GameObject.FindGameObjectsWithTag("Trophy").Length == 0)
+//                this.CmdEndGame();
+//        }
 
         if (c.gameObject.tag == "Player")
         {

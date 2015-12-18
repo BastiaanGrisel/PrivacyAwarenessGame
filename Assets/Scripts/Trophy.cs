@@ -2,7 +2,5 @@
 using System.Collections;
 
 public class Trophy : MonoBehaviour {
-
-    [SerializeField]
-    public bool isWinningTrophy;
+	public int Number;
 }
