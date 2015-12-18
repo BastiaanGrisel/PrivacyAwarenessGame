@@ -31,6 +31,10 @@ public class ServerLogic : NetworkBehaviour
 		Profiles.Add(new Profile(){"ikbenhier123@home.nl", "De Regenboogschool", "Hockey", "Coldplay", "Pirates of the Caribbean", "5008 EP", "Verloofd", "Couscous", "Idefix", "Bakkerij"});
 		Profiles.Add(new Profile(){"hallodaar!@party.com", "CBS De Acker", "Tennis", "Adele", "Peter Pan", "8062 MW", "Gescheiden", "Chili con carne", "Nero", "Restaurant"});
 
+        // Get a link to the data exchange panel and make it inactive
+        DataExchangePanel = GameObject.Find("DataExchangePanel");
+        DataExchangePanel.SetActive(false);
+
 		Players = new List<PlayerState> ();
     }
 	

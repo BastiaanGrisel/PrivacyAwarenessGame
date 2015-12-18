@@ -20,6 +20,9 @@ public class PlayerState : NetworkBehaviour
     private Camera SceneCamera;
 
 	public GameObject KeysHUD;
+	[SerializeField]
+	private GameObject ScoreBoard;
+	public GameObject ScoreBoardInstance;
 
 	private ServerLogic ServerLogic;
 
@@ -29,7 +32,7 @@ public class PlayerState : NetworkBehaviour
 		Cheated = 0;
 	}
 
-    void Start ()
+    void Start()
     {
 		ServerLogic = GameObject.Find ("Game").GetComponent<ServerLogic> ();
 		ServerLogic.RegisterPlayer(this);
@@ -49,6 +52,7 @@ public class PlayerState : NetworkBehaviour
             }
         }
 
+        ScoreBoardInstance = Instantiate(ScoreBoard);
         setPlayerTag();
     }
 
@@ -57,7 +61,6 @@ public class PlayerState : NetworkBehaviour
         this.gameObject.AddComponent<Tag3D>();
         this.gameObject.GetComponent<Tag3D>().tagText = username;
     }
-    
 
 	void Update(){
 		if (Input.GetKeyDown ("v"))
