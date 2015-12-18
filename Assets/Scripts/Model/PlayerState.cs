@@ -49,7 +49,7 @@ public class PlayerState : NetworkBehaviour
                 SceneCamera.gameObject.SetActive(false);
             }
 
-			GameObject ui = Instantiate(KeysHUD);
+//			GameObject ui = Instantiate(KeysHUD);
         }
 	}
 

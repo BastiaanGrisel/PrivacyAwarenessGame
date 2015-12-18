@@ -4,20 +4,24 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(PlayerMotor))]
+[RequireComponent(typeof(PlayerState))]
 public class PlayerController : NetworkBehaviour
 {
     [SerializeField]
     private float speed = 5f;
     [SerializeField]
     private float mouseSensitivity = 3f;
-    [SerializeField]
-    private PlayerMotor motor;
+
+	private PlayerMotor motor;
+	private PlayerState state;
     private ServerLogic serverLogic;
     private GameObject DataExchangePanel;
+
 
     void Awake()
     {
 		motor = GetComponent<PlayerMotor>();
+		state = GetComponent<PlayerState>();
         serverLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
         DataExchangePanel = serverLogic.DataExchangePanel;
     }
@@ -63,12 +67,19 @@ public class PlayerController : NetworkBehaviour
 
     void OnCollisionEnter(Collision c)
     {
-        if (c.gameObject.tag == "Trophy" && ((Trophy)c.gameObject.GetComponent<Trophy>()).isWinningTrophy)
-        {
-            c.gameObject.SetActive(false);
-            if (GameObject.FindGameObjectsWithTag("Trophy").Length == 0)
-                this.CmdEndGame();
-        }
+        if (c.gameObject.tag == "Trophy" && state.Route.Count > 0 && c.gameObject.GetComponent<Trophy> ().Number == state.Route [0]) {
+
+			c.gameObject.SetActive(false);
+			state.Route.RemoveAt(0);
+
+			if(state.Route.Count == 0)
+				GameObject.Find ("Score").GetComponent<Score>().CmdAddOnePointTo(state.Team);
+		}
+//        {
+//            c.gameObject.SetActive(false);
+//            if (GameObject.FindGameObjectsWithTag("Trophy").Length == 0)
+//                this.CmdEndGame();
+//        }
 
 //        if (c.gameObject.tag == "Player")
 //        {
