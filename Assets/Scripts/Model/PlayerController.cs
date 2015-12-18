@@ -16,12 +16,11 @@ public class PlayerController : NetworkBehaviour
 	private PlayerMotor motor;
 	private PlayerState state;
     private ServerLogic serverLogic;
-    private GameObject DataExchangeCanvas;
     [SerializeField]
     private GameObject DataExchangeCanvasPrefab;
     [SerializeField]
     private GameObject QuestionButtonPrefab;
-    private GameObject Canvas;
+    private GameObject DataExchangeCanvas;
 
 
     void Awake()
@@ -29,14 +28,14 @@ public class PlayerController : NetworkBehaviour
 		motor = GetComponent<PlayerMotor>();
 		state = GetComponent<PlayerState>();
         serverLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
-        Canvas = Instantiate(DataExchangeCanvasPrefab) as GameObject;
+        DataExchangeCanvas = Instantiate(DataExchangeCanvasPrefab) as GameObject;
         foreach (ProfileAttribute attr in Enum.GetValues(typeof(ProfileAttribute)))
         {
             GameObject newButton = Instantiate(QuestionButtonPrefab) as GameObject;
-            Transform QuestionsPanel = Canvas.transform.Find("Panel").Find("ScrollView").Find("QuestionsPanel");
+            Transform QuestionsPanel = DataExchangeCanvas.transform.Find("Panel").Find("ScrollView").Find("QuestionsPanel");
             newButton.transform.parent = QuestionsPanel;
         }
-        Canvas.SetActive(false);
+        DataExchangeCanvas.SetActive(false);
     }
 
     void Update()
@@ -98,11 +97,11 @@ public class PlayerController : NetworkBehaviour
         if (c.gameObject.tag == "Player")
         {
             
-            Transform panel = Canvas.transform.Find("DataExchangePanel");
+            Transform panel = DataExchangeCanvas.transform.Find("DataExchangePanel");
             Text dataExchangeGUIText = panel.transform.Find("DataExchangePlayerIDText").GetComponent<Text>();
             dataExchangeGUIText.text = c.gameObject.GetInstanceID().ToString();
             panel.GetComponent<DataExchangePanel>().otherPlayer = c.gameObject.GetInstanceID();
-            Canvas.SetActive(true);
+            DataExchangeCanvas.SetActive(true);
         }
     }
 
