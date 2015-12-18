@@ -42,6 +42,7 @@ public class PlayerState : NetworkBehaviour
             foreach (Behaviour comp in ComponentsToDisable){
                 comp.enabled = false;
             }
+            setPlayerTag();
         }
         else
         {
@@ -53,7 +54,6 @@ public class PlayerState : NetworkBehaviour
         }
 
         ScoreBoardInstance = Instantiate(ScoreBoard);
-        setPlayerTag();
     }
 
     public void setPlayerTag()
