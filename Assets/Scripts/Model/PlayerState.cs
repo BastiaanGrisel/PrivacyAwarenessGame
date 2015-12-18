@@ -40,11 +40,6 @@ public class PlayerState : NetworkBehaviour
 
     void Start()
     {
-        collectedData.Add(new KeyValuePair<ProfileAttribute, string>(ProfileAttribute.Email, "Johnny@hotmail.com"));
-        collectedData.Add(new KeyValuePair<ProfileAttribute, string>(ProfileAttribute.Pet, "Patty"));
-        collectedData.Add(new KeyValuePair<ProfileAttribute, string>(ProfileAttribute.ZipCode, "J2883PSP"));
-        collectedData.Add(new KeyValuePair<ProfileAttribute, string>(ProfileAttribute.SocialStatus, "socialsds"));
-
         ServerLogic = GameObject.Find ("Game").GetComponent<ServerLogic> ();
 		ServerLogic.RegisterPlayer(this);
 

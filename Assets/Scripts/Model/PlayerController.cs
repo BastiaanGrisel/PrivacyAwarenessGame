@@ -35,12 +35,6 @@ public class PlayerController : NetworkBehaviour
         if (isLocalPlayer)
         {
             DataExchangeCanvas = Instantiate(DataExchangeCanvasPrefab) as GameObject;
-            foreach (ProfileAttribute a in Enum.GetValues(typeof(ProfileAttribute)))
-            {
-                GameObject newButton = Instantiate(QuestionButtonPrefab) as GameObject;
-                Transform QuestionsPanel = DataExchangeCanvas.transform.Find("DataExchangePanel").Find("Panel").Find("ScrollView").Find("QuestionsPanel");
-                newButton.transform.parent = QuestionsPanel;
-            }
             DataExchangeCanvas.SetActive(false);
         }
     }
@@ -104,12 +98,33 @@ public class PlayerController : NetworkBehaviour
 //                this.CmdEndGame();
 //        }
 
-        if (c.gameObject.tag == "Player" || true)
+        if (c.gameObject.tag == "Player")
         {
             Transform panel = DataExchangeCanvas.transform.Find("DataExchangePanel");
             Text dataExchangeGUIText = panel.transform.Find("DataExchangePlayerIDText").GetComponent<Text>();
-            dataExchangeGUIText.text = c.gameObject.GetInstanceID().ToString();
-            panel.GetComponent<DataExchangePanel>().otherPlayer = c.gameObject.GetInstanceID();
+            dataExchangeGUIText.text = c.gameObject.GetComponent<PlayerState>().username;
+
+            Transform QuestionsPanel = panel.Find("Panel").Find("ScrollView").Find("QuestionsPanel");
+            foreach (Transform trans in QuestionsPanel)
+            {
+                Destroy(trans.gameObject);
+            }
+            foreach (ProfileAttribute attr in Enum.GetValues(typeof(ProfileAttribute)))
+            {
+                GameObject newButton = Instantiate(QuestionButtonPrefab) as GameObject;
+                newButton.transform.Find("Text").GetComponent<Text>().text = ProfileAttributeExt.ToFriendlyString(attr);
+                newButton.transform.parent = QuestionsPanel;
+                Button button = newButton.GetComponent<Button>();
+                ProfileAttribute attrClone = attr;
+                button.onClick.AddListener(() =>
+                {
+                    Profile profile = serverLogic.Profiles[c.gameObject.GetComponent<PlayerState>().ProfileIndex];
+                    string answer = profile[(int)attrClone];
+                    state.collectedData.Add(new KeyValuePair<ProfileAttribute, string>(attrClone, answer));
+                    DataExchangeCanvas.SetActive(false);
+                });
+            }
+
             DataExchangeCanvas.SetActive(true);
         }
     }
