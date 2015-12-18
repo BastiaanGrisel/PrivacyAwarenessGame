@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using System;
 using System.Linq;
+using UnityEngine.UI;
 
 public class ServerLogic : NetworkBehaviour
 {
     // Global properties
     [SyncVar] public bool GameStarted = false;
-	public GameObject DataExchangePanel;
 
     // Game properties
     public List<Profile> Profiles = new List<Profile>();
@@ -16,9 +16,6 @@ public class ServerLogic : NetworkBehaviour
 	
     public void Awake()
     {
-//		DataExchangePanel = GameObject.Find("DataExchangePanel");
-//		DataExchangePanel.SetActive (false);
-
         // Initialize all the profiles.
 		Profiles.Add(new Profile(){"devries@smart.nl", "Stanislas College", "Gitaar Spelen", "B-Brave", "James Bond", "4567 GB", "Single", "Pizza", "Bobby", "Snackbar"});
 		Profiles.Add(new Profile(){"jongen34@school.nl", "Stedelijk Gymnasium", "Paard rijden", "Justin Bieber", "Star Wars", "7832 FD", "Getrouwd", "Nasi Goreng", "Rataplan", "Supermarkt"});
@@ -30,10 +27,6 @@ public class ServerLogic : NetworkBehaviour
 		Profiles.Add(new Profile(){"sophie43@coolmail.com", "Engelbertcollege", "Voetballen", "Armin van Buren", "Finding Nemo", "1735 TR", "Ingewikkeld", "Patat", "Dexter", "Kledingwinkel"});
 		Profiles.Add(new Profile(){"ikbenhier123@home.nl", "De Regenboogschool", "Hockey", "Coldplay", "Pirates of the Caribbean", "5008 EP", "Verloofd", "Couscous", "Idefix", "Bakkerij"});
 		Profiles.Add(new Profile(){"hallodaar!@party.com", "CBS De Acker", "Tennis", "Adele", "Peter Pan", "8062 MW", "Gescheiden", "Chili con carne", "Nero", "Restaurant"});
-
-        // Get a link to the data exchange panel and make it inactive
-        DataExchangePanel = GameObject.Find("DataExchangePanel");
-        DataExchangePanel.SetActive(false);
 
 		Players = new List<PlayerState> ();
     }
@@ -73,6 +66,12 @@ public class ServerLogic : NetworkBehaviour
 			//Add a unique route to each player
 			Enumerable.Range(0,4).OrderBy(r => UnityEngine.Random.value).ToList().ForEach(r => Players[i].Route.Add(r));
 
+			// Show the route in the UI
+//			for (int j = 0; i < Players[i].Route.Count; j++) {
+//				Debug.Log (Players[i].RouteUIInstance.transform.Find(i.ToString()));
+////				Players[i].RouteUIInstance.transform.Find(i.ToString()).GetComponent<Text>().text = Players[i].Route[j].ToString();
+//			}
+
 			for(int j = 0; j < AttributesPerPlayer; j++) {
 				if(AttributesNotYetInGame.Any ()) {
 					// Add an attribute to the player (and to the players of the other players since SelectedAttributed is a SyncList)
@@ -84,7 +83,7 @@ public class ServerLogic : NetworkBehaviour
 					Players[i].SelectedAttributes.Add ((int) AllAttributes.Find(a => !Players[i].SelectedAttributes.Contains((int) a)));
 				}
 			}
-
+		
 			// Assign each player a team
 			Players[i].Team = i % 2;
 		}
