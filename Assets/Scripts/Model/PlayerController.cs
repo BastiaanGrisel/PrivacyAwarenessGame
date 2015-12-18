@@ -29,7 +29,7 @@ public class PlayerController : NetworkBehaviour
 		state = GetComponent<PlayerState>();
         serverLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
         DataExchangeCanvas = Instantiate(DataExchangeCanvasPrefab) as GameObject;
-        foreach (ProfileAttribute attr in Enum.GetValues(typeof(ProfileAttribute)))
+        foreach (ProfileAttribute a in Enum.GetValues(typeof(ProfileAttribute)))
         {
             GameObject newButton = Instantiate(QuestionButtonPrefab) as GameObject;
             Transform QuestionsPanel = DataExchangeCanvas.transform.Find("Panel").Find("ScrollView").Find("QuestionsPanel");

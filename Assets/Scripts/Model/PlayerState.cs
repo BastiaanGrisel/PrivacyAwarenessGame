@@ -10,6 +10,8 @@ public class PlayerState : NetworkBehaviour
 	public SyncListInt SelectedAttributes;
     [SyncVar] public string username;
 
+    public List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
+
 	// The number of times a player has cheated
 	public int Cheated;
 	public int Team;  
@@ -29,7 +31,8 @@ public class PlayerState : NetworkBehaviour
 
 	private ServerLogic ServerLogic;
 
-	void Awake() {
+	void Awake()
+    {
 		SelectedAttributes = new SyncListInt();
 		Route = new SyncListInt ();
 		Cheated = 0;
@@ -37,7 +40,12 @@ public class PlayerState : NetworkBehaviour
 
     void Start()
     {
-		ServerLogic = GameObject.Find ("Game").GetComponent<ServerLogic> ();
+        collectedData.Add(new KeyValuePair<ProfileAttribute, string>(ProfileAttribute.Email, "Johnny@hotmail.com"));
+        collectedData.Add(new KeyValuePair<ProfileAttribute, string>(ProfileAttribute.Pet, "Patty"));
+        collectedData.Add(new KeyValuePair<ProfileAttribute, string>(ProfileAttribute.ZipCode, "J2883PSP"));
+        collectedData.Add(new KeyValuePair<ProfileAttribute, string>(ProfileAttribute.SocialStatus, "socialsds"));
+
+        ServerLogic = GameObject.Find ("Game").GetComponent<ServerLogic> ();
 		ServerLogic.RegisterPlayer(this);
 
         if (!isLocalPlayer)
@@ -122,4 +130,11 @@ public class PlayerState : NetworkBehaviour
 		lock3.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
 		lock3.GetComponent<LockCube> ().RpcSetActive (true);
 	}
+
+    [Command]
+    void CmdOnExchangeComplete(ProfileAttribute attribute, string data)
+    {
+        // [TODO] ... Add pair to collectedData.
+
+    }
 }

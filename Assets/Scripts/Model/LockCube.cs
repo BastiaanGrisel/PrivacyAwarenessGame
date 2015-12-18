@@ -22,9 +22,21 @@ public class LockCube : NetworkBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 //		Debug.Log (Key +" ("+other.gameObject.GetComponent<PlayerState> ().SelectedAttributes.Contains((int) Key)+")");
-		if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerState> ().SelectedAttributes.Contains((int) Key)) {
-			other.gameObject.GetComponent<PlayerState>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
-			other.gameObject.GetComponent<PlayerState>().CmdDestroyLockCube(netId);
+		if (other.gameObject.tag == "Player")
+        {
+            var iter = other.gameObject.GetComponent<PlayerState>().collectedData.GetEnumerator();
+            while (iter.MoveNext())
+            {
+                if (iter.Current.Key == this.Key)
+                {
+                    other.gameObject.GetComponent<PlayerState>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
+                    other.gameObject.GetComponent<PlayerState>().CmdDestroyLockCube(netId);
+
+                    other.gameObject.GetComponent<PlayerState>().collectedData.Remove(iter.Current);
+                    break;
+                }
+            }
+
 		}
 	}
 }
