@@ -13,13 +13,13 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private PlayerMotor motor;
     private ServerLogic serverLogic;
-    private GameObject dataExchangePanel;
+    private GameObject DataExchangePanel;
 
     void Awake()
     {
 		motor = GetComponent<PlayerMotor>();
         serverLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
-        dataExchangePanel = serverLogic.dataExchangePanel;
+        DataExchangePanel = serverLogic.DataExchangePanel;
     }
 
     void Update()
@@ -70,14 +70,14 @@ public class PlayerController : NetworkBehaviour
                 this.CmdEndGame();
         }
 
-        if (c.gameObject.tag == "Player")
-        {
-            Transform text = dataExchangePanel.transform.Find("DataExchangePlayerIDText");
-            Text dataExchangeGUIText = text.GetComponent<Text>();
-            dataExchangeGUIText.text = c.gameObject.GetInstanceID().ToString();
-            dataExchangePanel.GetComponent<DataExchangePanel>().otherPlayer = c.gameObject.GetInstanceID();
-            dataExchangePanel.gameObject.SetActive(true);
-        }
+//        if (c.gameObject.tag == "Player")
+//        {
+//            Transform text = DataExchangePanel.transform.Find("DataExchangePlayerIDText");
+//            Text dataExchangeGUIText = text.GetComponent<Text>();
+//            dataExchangeGUIText.text = c.gameObject.GetInstanceID().ToString();
+//            DataExchangePanel.GetComponent<DataExchangePanel>().otherPlayer = c.gameObject.GetInstanceID();
+//            DataExchangePanel.gameObject.SetActive(true);
+//        }
     }
 
     [Command]

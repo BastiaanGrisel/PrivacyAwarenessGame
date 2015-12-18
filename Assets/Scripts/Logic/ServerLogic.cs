@@ -8,14 +8,17 @@ public class ServerLogic : NetworkBehaviour
 {
     // Global properties
     [SyncVar] public bool GameStarted = false;
-    private const int nAttributes = 10;
-	private List<PlayerState> Players;
+	public GameObject DataExchangePanel;
 
     // Game properties
     public List<Profile> Profiles = new List<Profile>();
-
+	private List<PlayerState> Players;
+	
     public void Awake()
     {
+//		DataExchangePanel = GameObject.Find("DataExchangePanel");
+//		DataExchangePanel.SetActive (false);
+
         // Initialize all the profiles.
 		Profiles.Add(new Profile(){"devries@smart.nl", "Stanislas College", "Gitaar Spelen", "B-Brave", "James Bond", "4567 GB", "Single", "Pizza", "Bobby", "Snackbar"});
 		Profiles.Add(new Profile(){"jongen34@school.nl", "Stedelijk Gymnasium", "Paard rijden", "Justin Bieber", "Star Wars", "7832 FD", "Getrouwd", "Nasi Goreng", "Rataplan", "Supermarkt"});
