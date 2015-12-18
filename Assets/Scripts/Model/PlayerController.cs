@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System;
 
 [RequireComponent(typeof(PlayerMotor))]
 public class PlayerController : NetworkBehaviour
@@ -13,13 +14,25 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private PlayerMotor motor;
     private ServerLogic serverLogic;
-    private GameObject DataExchangePanel;
+    private GameObject DataExchangeCanvas;
+    [SerializeField]
+    private GameObject DataExchangeCanvasPrefab;
+    [SerializeField]
+    private GameObject QuestionButtonPrefab;
+    private GameObject Canvas;
 
     void Awake()
     {
 		motor = GetComponent<PlayerMotor>();
         serverLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
-        DataExchangePanel = serverLogic.DataExchangePanel;
+        Canvas = Instantiate(DataExchangeCanvasPrefab) as GameObject;
+        foreach (ProfileAttribute attr in Enum.GetValues(typeof(ProfileAttribute)))
+        {
+            GameObject newButton = Instantiate(QuestionButtonPrefab) as GameObject;
+            Transform QuestionsPanel = Canvas.transform.Find("Panel").Find("ScrollView").Find("QuestionsPanel");
+            newButton.transform.parent = QuestionsPanel;
+        }
+        Canvas.SetActive(false);
     }
 
     void Update()
@@ -72,11 +85,12 @@ public class PlayerController : NetworkBehaviour
 
         if (c.gameObject.tag == "Player")
         {
-            Transform text = DataExchangePanel.transform.Find("DataExchangePlayerIDText");
-            Text dataExchangeGUIText = text.GetComponent<Text>();
+            
+            Transform panel = Canvas.transform.Find("DataExchangePanel");
+            Text dataExchangeGUIText = panel.transform.Find("DataExchangePlayerIDText").GetComponent<Text>();
             dataExchangeGUIText.text = c.gameObject.GetInstanceID().ToString();
-            DataExchangePanel.GetComponent<DataExchangePanel>().otherPlayer = c.gameObject.GetInstanceID();
-            DataExchangePanel.gameObject.SetActive(true);
+            panel.GetComponent<DataExchangePanel>().otherPlayer = c.gameObject.GetInstanceID();
+            Canvas.SetActive(true);
         }
     }
 
