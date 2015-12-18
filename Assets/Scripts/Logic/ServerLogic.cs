@@ -49,6 +49,7 @@ public class ServerLogic : NetworkBehaviour
         for (int iAttributes = 0; iAttributes < nAttributes; iAttributes++)
             unassignedAttributes.Add(new KeyValuePair<int, int>(iAttributes, rnd.Next(0, profiles.Count-1)));
 
+        // Get a link to the data exchange panel and make it inactive
         dataExchangePanel = GameObject.Find("DataExchangePanel");
         dataExchangePanel.SetActive(false);
     }
