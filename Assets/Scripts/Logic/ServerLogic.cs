@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using System;
 using System.Linq;
+using UnityEngine.UI;
 
 public class ServerLogic : NetworkBehaviour
 {
@@ -73,6 +74,12 @@ public class ServerLogic : NetworkBehaviour
 			//Add a unique route to each player
 			Enumerable.Range(0,4).OrderBy(r => UnityEngine.Random.value).ToList().ForEach(r => Players[i].Route.Add(r));
 
+			// Show the route in the UI
+//			for (int j = 0; i < Players[i].Route.Count; j++) {
+//				Debug.Log (Players[i].RouteUIInstance.transform.Find(i.ToString()));
+////				Players[i].RouteUIInstance.transform.Find(i.ToString()).GetComponent<Text>().text = Players[i].Route[j].ToString();
+//			}
+
 			for(int j = 0; j < AttributesPerPlayer; j++) {
 				if(AttributesNotYetInGame.Any ()) {
 					// Add an attribute to the player (and to the players of the other players since SelectedAttributed is a SyncList)
@@ -84,7 +91,7 @@ public class ServerLogic : NetworkBehaviour
 					Players[i].SelectedAttributes.Add ((int) AllAttributes.Find(a => !Players[i].SelectedAttributes.Contains((int) a)));
 				}
 			}
-
+		
 			// Assign each player a team
 			Players[i].Team = i % 2;
 		}

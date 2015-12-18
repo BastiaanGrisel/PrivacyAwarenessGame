@@ -23,6 +23,9 @@ public class PlayerState : NetworkBehaviour
 	[SerializeField]
 	private GameObject ScoreBoard;
 	public GameObject ScoreBoardInstance;
+	[SerializeField]
+	private GameObject RouteUI;
+	public GameObject RouteUIInstance;
 
 	private ServerLogic ServerLogic;
 
@@ -52,6 +55,7 @@ public class PlayerState : NetworkBehaviour
             }
         }
 
+//		RouteUIInstance = Instantiate(RouteUI);
         ScoreBoardInstance = Instantiate(ScoreBoard);
         setPlayerTag();
     }
