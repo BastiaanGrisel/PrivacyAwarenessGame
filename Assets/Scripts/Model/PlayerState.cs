@@ -19,6 +19,9 @@ public class PlayerState : NetworkBehaviour
     private Camera SceneCamera;
 
 	public GameObject KeysHUD;
+	[SerializeField]
+	private GameObject ScoreBoard;
+	public GameObject ScoreBoardInstance;
 
 	private ServerLogic ServerLogic;
 
@@ -48,9 +51,11 @@ public class PlayerState : NetworkBehaviour
             {
                 SceneCamera.gameObject.SetActive(false);
             }
+			ScoreBoardInstance = Instantiate(ScoreBoard);
 
 //			GameObject ui = Instantiate(KeysHUD);
         }
+
 	}
 
 	void Update(){

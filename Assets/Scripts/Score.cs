@@ -20,8 +20,8 @@ public class Score : NetworkBehaviour {
 		GetComponent<Text>().text = t1.ToString() + " - " + t2.ToString();
 	}
 
-	[Command]
-	public void CmdAddOnePointTo(int t) {
+//	[Command]
+	public void AddOnePointTo(int t) {
 		switch (t) {
 			case 0: SetScore (++team1, team2); break;
 			case 1: SetScore (team1, ++team2); break;

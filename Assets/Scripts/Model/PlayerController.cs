@@ -72,8 +72,9 @@ public class PlayerController : NetworkBehaviour
 			c.gameObject.SetActive(false);
 			state.Route.RemoveAt(0);
 
-			if(state.Route.Count == 0)
-				GameObject.Find ("Score").GetComponent<Score>().CmdAddOnePointTo(state.Team);
+			if(state.Route.Count == 0) {
+				state.ScoreBoardInstance.GetComponentInChildren<Score>().AddOnePointTo(state.Team);
+			}
 		}
 //        {
 //            c.gameObject.SetActive(false);
