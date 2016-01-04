@@ -59,8 +59,16 @@ public class PlayerState : NetworkBehaviour
             }
         }
 
-//		RouteUIInstance = Instantiate(RouteUI);
+        // RouteUIInstance = Instantiate(RouteUI);
         ScoreBoardInstance = Instantiate(ScoreBoard);
+    }
+
+    public void updateTrophyGUI()
+    {
+        // Set the Trophy Tracker UI.
+        GameObject.Find("Trophy Tracker").GetComponent<Text>().text = "Trophy Order: ";
+        for (int i = 0; i < Route.Count; i++)
+            GameObject.Find("Trophy Tracker").GetComponent<Text>().text += Route[i].ToString() + " ";
     }
 
     public void setPlayerTag()

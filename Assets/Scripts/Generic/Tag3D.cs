@@ -4,6 +4,7 @@ using System.Collections;
 public class Tag3D : MonoBehaviour
 {
     public string tagText = "<Dummy Tag>";
+    public Color color;
 
     void OnGUI()
     {
@@ -16,7 +17,11 @@ public class Tag3D : MonoBehaviour
             point.y = Screen.height - point.y;
 
             int xOffset = tagText.Length * 3;
+
+            Color oldColor = GUI.color;
+            GUI.color = color;
             GUI.Label(new Rect(point.x - xOffset, point.y - 10, 200, 20), tagText);
+            GUI.color = oldColor;
         }
     }
 }

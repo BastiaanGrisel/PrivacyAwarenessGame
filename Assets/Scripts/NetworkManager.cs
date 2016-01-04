@@ -21,15 +21,18 @@ public class NetworkManager : UnityEngine.Networking.NetworkManager
 
     public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId, NetworkReader extraMessageReader)
     {
+        string username = extraMessageReader.ReadMessage<UsernameMsg>().username;
         if (Network.connections.Length <= MaxConnections)
         {
             // Instantiate a Player
             GameObject player = (GameObject)GameObject.Instantiate(playerPrefab, GetStartPosition().position, Quaternion.identity);
-            player.GetComponent<PlayerState>().username = extraMessageReader.ReadMessage<UsernameMsg>().username;
+            player.GetComponent<PlayerState>().username = username;
             NetworkServer.AddPlayerForConnection(connection, player, playerControllerId);
         }
         else
             // [Todo] Handle players disconnecting, and reconnecting later.
             Network.maxConnections = 0;
+
+       GameObject.Find("Notification").GetComponent<Notification>().Notify(username + " connected to the game!");
     }
 }

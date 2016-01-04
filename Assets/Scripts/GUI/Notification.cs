@@ -1,41 +1,46 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Notification : MonoBehaviour
 {
-    private Color myColor;
     private float alpha = 1f;
     private float speed = 0.5f;
- 
-    private float targetAlpha = 0;
-  
+
+    private List<string> notifications = new List<string>();
+    private string current = "";
+
+    public void Notify(string message)
+    {
+        notifications.Add(message);
+    }
+
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.RightArrow))
+        if (!Mathf.Approximately(alpha, 0))
+            alpha = Mathf.MoveTowards(alpha, 0.0f, speed * Time.deltaTime);
+        else if (notifications.Count != 0)
         {
-            Debug.Log( "Fading Out" );
-            alpha = 1;
+            current = notifications[0];
+            notifications.RemoveAt(0);
+            alpha = 1.0f;
         }
-         
-        if(!Mathf.Approximately(alpha, targetAlpha))
-        {
-            alpha = Mathf.MoveTowards( alpha, targetAlpha, speed * Time.deltaTime );
-        }
+        else
+            current = " ";
     }
   
-     void OnGUI()
-     {
-        GUI.Label(new Rect(500, 500, 300, 300), "Fading Text");
+    void OnGUI()
+    {
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 28;
+        style.alignment = TextAnchor.UpperCenter;
+
+        int width = 200;
+        int height = 100;
+        Color oldColor = GUI.color;
+        Color newColor = GUI.color;
+        newColor.a = alpha;
+        GUI.color = newColor;
+        GUI.Label(new Rect(Screen.width / 2 - width/2, Screen.height / 4 - height/2, width, height), current, style);
+        GUI.color = oldColor;
     }
- 
-     void pauseWindow (int windowID) 
-     {
-         myColor = GUI.color;
-         myColor.a = alpha;
-         GUI.color = myColor;
-         GUI.Label(new Rect(100,100,100,100), "Fading Text");
-         myColor.a = 1f;
-         GUI.color = myColor;
-         GUI.Label(new Rect (100,200,100,100), "Simple Text");
-     }
 }
