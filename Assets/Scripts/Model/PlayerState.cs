@@ -30,7 +30,7 @@ public class PlayerState : NetworkBehaviour
 	public GameObject RouteUIInstance;
 
 	private ServerLogic ServerLogic;
-
+    
 	void Awake()
     {
 		SelectedAttributes = new SyncListInt();

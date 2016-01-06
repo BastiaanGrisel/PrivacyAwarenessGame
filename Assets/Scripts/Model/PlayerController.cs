@@ -19,9 +19,12 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private GameObject DataExchangeCanvasPrefab;
     [SerializeField]
-    private GameObject QuestionButtonPrefab;
+    private GameObject ButtonPrefab;
     private GameObject DataExchangeCanvas;
 
+    [SerializeField]
+    private GameObject AnswerCanvasPrefab;
+    private GameObject AnswerCanvas;
 
     void Awake()
     {
@@ -36,6 +39,8 @@ public class PlayerController : NetworkBehaviour
         {
             DataExchangeCanvas = Instantiate(DataExchangeCanvasPrefab) as GameObject;
             DataExchangeCanvas.SetActive(false);
+            AnswerCanvas = Instantiate(AnswerCanvasPrefab) as GameObject;
+            AnswerCanvas.SetActive(false);
         }
     }
 
@@ -111,16 +116,14 @@ public class PlayerController : NetworkBehaviour
             }
             foreach (ProfileAttribute attr in Enum.GetValues(typeof(ProfileAttribute)))
             {
-                GameObject newButton = Instantiate(QuestionButtonPrefab) as GameObject;
+                GameObject newButton = Instantiate(ButtonPrefab) as GameObject;
                 newButton.transform.Find("Text").GetComponent<Text>().text = ProfileAttributeExt.ToFriendlyString(attr);
-                newButton.transform.parent = QuestionsPanel;
+                newButton.transform.SetParent(QuestionsPanel);
                 Button button = newButton.GetComponent<Button>();
                 ProfileAttribute attrClone = attr;
                 button.onClick.AddListener(() =>
                 {
-                    Profile profile = serverLogic.Profiles[c.gameObject.GetComponent<PlayerState>().ProfileIndex];
-                    string answer = profile[(int)attrClone];
-                    state.collectedData.Add(new KeyValuePair<ProfileAttribute, string>(attrClone, answer));
+                    CmdAskQuestion(attrClone, this.gameObject, c.gameObject);
                     DataExchangeCanvas.SetActive(false);
                 });
             }
@@ -130,8 +133,83 @@ public class PlayerController : NetworkBehaviour
     }
 
     [Command]
-    public void CmdEndGame()
+    void CmdEndGame()
     {
         serverLogic.GameStarted = false;
+    }
+
+    [Command]
+    void CmdAskQuestion(ProfileAttribute attr, GameObject requester, GameObject questioned)
+    {
+        RpcAskQuestion(attr, requester, questioned);
+        AskQuestion(attr, requester, questioned);
+    }
+
+    [ClientRpc]
+    void RpcAskQuestion(ProfileAttribute attr, GameObject requester, GameObject questioned)
+    {
+        questioned.GetComponent<PlayerController>().AskQuestion(attr, requester, questioned);
+    }
+
+    void AskQuestion(ProfileAttribute attr, GameObject requester, GameObject questioned)
+    {
+        if (this.gameObject.Equals(questioned) && isLocalPlayer)
+        {
+            Transform panel = AnswerCanvas.transform.Find("AnswerPanel");
+            Text questionsGUIText = panel.transform.Find("AnswerPlayerIDText").GetComponent<Text>();
+            PlayerState requesterPlayerState = requester.GetComponent<PlayerState>();
+            questionsGUIText.text = requesterPlayerState.username;
+
+            Transform AnswerPanel = panel.Find("Panel").Find("ScrollView").Find("AnswerPanel");
+            foreach (Transform trans in AnswerPanel)
+            {
+                Destroy(trans.gameObject);
+            }
+
+            Profile profile = serverLogic.Profiles[questioned.GetComponent<PlayerState>().ProfileIndex];
+            string answerTruth = profile[(int)attr];
+            GameObject truthButton = Instantiate(ButtonPrefab) as GameObject;
+            truthButton.transform.Find("Text").GetComponent<Text>().text = "Waarheid (" + ProfileAttributeExt.ToFriendlyString(attr) + "=" + answerTruth;
+            truthButton.transform.SetParent(AnswerPanel);
+            Button tButton = truthButton.GetComponent<Button>();
+            tButton.onClick.AddListener(() =>
+            {
+                CmdAnswerQuestion(attr, answerTruth, requester, questioned);
+                AnswerCanvas.SetActive(false);
+            });
+
+            GameObject lieButton = Instantiate(ButtonPrefab) as GameObject;
+            lieButton.transform.Find("Text").GetComponent<Text>().text = "Leugen";
+            lieButton.transform.SetParent(AnswerPanel);
+            Button lButton = lieButton.GetComponent<Button>();
+            lButton.onClick.AddListener(() =>
+            {
+                CmdAnswerQuestion(attr, "", requester, questioned);
+                AnswerCanvas.SetActive(false);
+            });
+
+            AnswerCanvas.SetActive(true);
+        }
+    }
+
+    [Command]
+    void CmdAnswerQuestion(ProfileAttribute attr, string answer, GameObject requester, GameObject questioned)
+    {
+        RpcAnswerQuestion(attr, answer, requester, questioned);
+        AnswerQuestion(attr, answer, requester, questioned);
+    }
+
+    [ClientRpc]
+    void RpcAnswerQuestion(ProfileAttribute attr, string answer, GameObject requester, GameObject questioned)
+    {
+        requester.GetComponent<PlayerController>().AnswerQuestion(attr, answer, requester, questioned);
+    }
+
+    void AnswerQuestion(ProfileAttribute attr, string answer, GameObject requester, GameObject questioned)
+    {
+        if (this.gameObject.Equals(requester) && isLocalPlayer)
+        {
+            state.collectedData.Add(new KeyValuePair<ProfileAttribute, string>(attr, answer));
+        }
     }
 }
