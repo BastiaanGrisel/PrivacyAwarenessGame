@@ -15,27 +15,26 @@ public class PlayerState : NetworkBehaviour
     private List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
     private int doorResetTime = 10;
 
-
 	// The number of times a player has cheated
 	public int Cheated;
 	public int Team;  
 	public List<int> Route = new List<int>();
 
     [SerializeField]
-	private Behaviour[] ComponentsToDisable;
+    private Behaviour[] ComponentsToDisable;
     private Camera SceneCamera;
 
-	public GameObject KeysHUD;
-	[SerializeField]
-	private GameObject ScoreBoard;
-	public GameObject ScoreBoardInstance;
-	[SerializeField]
-	private GameObject RouteUI;
-	public GameObject RouteUIInstance;
+    public GameObject KeysHUD;
+    [SerializeField]
+    private GameObject ScoreBoard;
+    public GameObject ScoreBoardInstance;
+    [SerializeField]
+    private GameObject RouteUI;
+    public GameObject RouteUIInstance;
 
-	private ServerLogic ServerLogic;
-    
-	void Awake()
+    private ServerLogic ServerLogic;
+
+    void Awake()
     {
 		Cheated = 0;
 		Enumerable.Range(0,4).OrderBy(r => UnityEngine.Random.value).ToList().ForEach(r => Route.Add(r));
@@ -47,16 +46,18 @@ public class PlayerState : NetworkBehaviour
 
     void Start()
     {
-        ServerLogic = GameObject.Find ("Game").GetComponent<ServerLogic> ();
-		ServerLogic.RegisterPlayer(this);
-		ScoreBoardInstance = Instantiate(ScoreBoard);
+        ServerLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
+        ServerLogic.RegisterPlayer(this);
+        ScoreBoardInstance = Instantiate(ScoreBoard);
+
+        setPlayerTag();
 
         if (!isLocalPlayer)
         {
-            foreach (Behaviour comp in ComponentsToDisable){
+            foreach (Behaviour comp in ComponentsToDisable) {
                 comp.enabled = false;
             }
-            RpcSetPlayerTag();
+
             ScoreBoardInstance.SetActive(false);
         }
         else
@@ -79,39 +80,38 @@ public class PlayerState : NetworkBehaviour
 		UpdateRouteUI();
 	}
 
-	public void UpdateRouteUI() {
-		ScoreBoardInstance.transform.Find ("RouteText").GetComponent<Text> ().text = "Route: " + string.Join (", ", Route.Select (r => r.ToString ()).ToArray ());
-	}
+    public void UpdateRouteUI() {
+        ScoreBoardInstance.transform.Find("RouteText").GetComponent<Text>().text = "Route: " + string.Join(", ", Route.Select(r => r.ToString()).ToArray());
+    }
 
-	public void UpdateOwnDataUI() {
-		string[] OwnData = SelectedAttributes.Select (a => ServerLogic.Profiles [ProfileIndex] [a]).ToArray ();
-		ScoreBoardInstance.transform.Find("OwnDataText").GetComponent<Text>().text = string.Join("\n", OwnData);
-	}
+    public void UpdateOwnDataUI() {
+        string[] OwnData = SelectedAttributes.Select(a => ServerLogic.Profiles[ProfileIndex][a]).ToArray();
+        ScoreBoardInstance.transform.Find("OwnDataText").GetComponent<Text>().text = string.Join("\n", OwnData);
+    }
 
-	public void UpdateCollectedDataUI() {
-		ScoreBoardInstance.transform.Find("CollectedDataText").GetComponent<Text>().text = string.Join("\n",collectedData.Select(d => d.Value).ToArray());
-	}
+    public void UpdateCollectedDataUI() {
+        ScoreBoardInstance.transform.Find("CollectedDataText").GetComponent<Text>().text = string.Join("\n", collectedData.Select(d => d.Value).ToArray());
+    }
 
-	public void AddCollectedData(KeyValuePair<ProfileAttribute, string> data) {
-		collectedData.Add (data);
-		UpdateCollectedDataUI ();
-	}
+    public void AddCollectedData(KeyValuePair<ProfileAttribute, string> data) {
+        collectedData.Add(data);
+        UpdateCollectedDataUI();
+    }
 
-	public void RemoveCollectedData(KeyValuePair<ProfileAttribute, string> data) {
-		collectedData.Remove (data);
-		UpdateCollectedDataUI ();
-	}
+    public void RemoveCollectedData(KeyValuePair<ProfileAttribute, string> data) {
+        collectedData.Remove(data);
+        UpdateCollectedDataUI();
+    }
 
-	public List<KeyValuePair<ProfileAttribute, string>>.Enumerator GetCollectedDataEnumerator() {
-		return collectedData.GetEnumerator ();
-	}
+    public List<KeyValuePair<ProfileAttribute, string>>.Enumerator GetCollectedDataEnumerator() {
+        return collectedData.GetEnumerator();
+    }
 
-    public void RpcSetPlayerTag()
+    public void setPlayerTag()
     {
-        this.gameObject.AddComponent<Tag3D>();
-        this.gameObject.GetComponent<Tag3D>().tagText = "BANAAN";
-        Debug.Log(username);
-        Debug.Log(this.gameObject.GetComponent<Tag3D>().tagText);
+        gameObject.AddComponent<Tag3D>();
+        gameObject.GetComponent<Tag3D>().tagText = username;
+        gameObject.GetComponent<Tag3D>().color = Color.white;
     }
 
 	void Update(){
@@ -184,5 +184,18 @@ public class PlayerState : NetworkBehaviour
     {
         // [TODO] ... Add pair to collectedData.
 
+    }
+
+    [Command]
+    public void CmdBroadcastNotification(string message)
+    {
+        RpcBroadcastNotification(message);
+    }
+
+    [ClientRpc]
+    public void RpcBroadcastNotification(string message)
+    {
+        GameObject notification = GameObject.Find("Notification");
+        notification.GetComponent<Notification>().Notify(message);
     }
 }
