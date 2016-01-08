@@ -9,6 +9,10 @@ public class PlayerState : NetworkBehaviour
     [SyncVar] public int ProfileIndex;
 	public SyncListInt SelectedAttributes;
     [SyncVar] public string username;
+    [SyncVar] public bool isQuestioning;
+    [SyncVar] public bool isAnswering;
+    [SyncVar] public bool isWaitingforQuestion;
+    [SyncVar] public uint communicationWithId;
 
     public List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
 
@@ -36,6 +40,10 @@ public class PlayerState : NetworkBehaviour
 		SelectedAttributes = new SyncListInt();
 		Route = new SyncListInt ();
 		Cheated = 0;
+        isQuestioning = false;
+        isAnswering = false;
+        isWaitingforQuestion = false;
+        communicationWithId = NetworkInstanceId.Invalid.Value;
 	}
 
     void Start()
@@ -139,5 +147,29 @@ public class PlayerState : NetworkBehaviour
     {
         // [TODO] ... Add pair to collectedData.
 
+    }
+
+    [Command]
+    public void CmdIsQuestioning(bool b)
+    {
+        isQuestioning = b;
+    }
+
+    [Command]
+    public void CmdIsAnswering(bool b)
+    {
+        isAnswering = b;
+    }
+
+    [Command]
+    public void CmdIsWaitingforQuestion(bool b)
+    {
+        isWaitingforQuestion = b;
+    }
+
+    [Command]
+    public void CmdCommunicationWithId(uint id)
+    {
+        communicationWithId = id;
     }
 }

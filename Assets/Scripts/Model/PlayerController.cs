@@ -105,6 +105,20 @@ public class PlayerController : NetworkBehaviour
 
         if (c.gameObject.tag == "Player")
         {
+            PlayerState otherPlayerState = c.gameObject.GetComponent<PlayerState>();
+            if(state.isQuestioning || state.isAnswering || state.isWaitingforQuestion)
+            {
+                GameObject.Find("Notification").GetComponent<Notification>().Notify("Je bent al met iemand aan het communiceren");
+                return;
+            }
+            if (otherPlayerState.isAnswering || ((otherPlayerState.isQuestioning || otherPlayerState.isWaitingforQuestion) && !this.netId.Value.Equals(otherPlayerState.communicationWithId)))
+            {
+                GameObject.Find("Notification").GetComponent<Notification>().Notify(otherPlayerState.username + " is al met iemand aan het communiceren");
+                return;
+            }
+            state.CmdIsQuestioning(true);
+            state.CmdIsWaitingforQuestion(true);
+            state.CmdCommunicationWithId(otherPlayerState.netId.Value);
             Transform panel = DataExchangeCanvas.transform.Find("DataExchangePanel");
             Text dataExchangeGUIText = panel.transform.Find("DataExchangePlayerIDText").GetComponent<Text>();
             dataExchangeGUIText.text = c.gameObject.GetComponent<PlayerState>().username;
@@ -125,6 +139,7 @@ public class PlayerController : NetworkBehaviour
                 {
                     CmdAskQuestion(attrClone, this.gameObject, c.gameObject);
                     DataExchangeCanvas.SetActive(false);
+                    state.CmdIsQuestioning(false);
                 });
             }
 
@@ -155,6 +170,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (this.gameObject.Equals(questioned) && isLocalPlayer)
         {
+            state.CmdIsAnswering(true);
             Transform panel = AnswerCanvas.transform.Find("AnswerPanel");
             Text questionsGUIText = panel.transform.Find("AnswerPlayerIDText").GetComponent<Text>();
             PlayerState requesterPlayerState = requester.GetComponent<PlayerState>();
@@ -176,6 +192,9 @@ public class PlayerController : NetworkBehaviour
             {
                 CmdAnswerQuestion(attr, answerTruth, requester, questioned);
                 AnswerCanvas.SetActive(false);
+                state.CmdIsAnswering(false);
+                if (!state.isQuestioning)
+                    state.CmdCommunicationWithId(NetworkInstanceId.Invalid.Value);
             });
 
             GameObject lieButton = Instantiate(ButtonPrefab) as GameObject;
@@ -186,7 +205,14 @@ public class PlayerController : NetworkBehaviour
             {
                 CmdAnswerQuestion(attr, "", requester, questioned);
                 AnswerCanvas.SetActive(false);
+                state.CmdIsAnswering(false);
+                if (!state.isQuestioning)
+                    state.CmdCommunicationWithId(NetworkInstanceId.Invalid.Value);
             });
+
+            state.CmdIsWaitingforQuestion(false);
+            if (!state.isAnswering)
+                state.CmdCommunicationWithId(NetworkInstanceId.Invalid.Value);
 
             AnswerCanvas.SetActive(true);
         }
@@ -210,6 +236,7 @@ public class PlayerController : NetworkBehaviour
         if (this.gameObject.Equals(requester) && isLocalPlayer)
         {
             state.collectedData.Add(new KeyValuePair<ProfileAttribute, string>(attr, answer));
+            GameObject.Find("Notification").GetComponent<Notification>().Notify(questioned.GetComponent<PlayerState>().username + " heeft je vraag over " + ProfileAttributeExt.ToFriendlyString(attr) + " beantwoord");
         }
     }
 }
