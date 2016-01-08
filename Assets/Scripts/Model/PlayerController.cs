@@ -209,7 +209,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (this.gameObject.Equals(requester) && isLocalPlayer)
         {
-            state.collectedData.Add(new KeyValuePair<ProfileAttribute, string>(attr, answer));
+            state.AddCollectedData(new KeyValuePair<ProfileAttribute, string>(attr, answer));
         }
     }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Collections;
 
 public class PlayerState : NetworkBehaviour
 {
@@ -10,7 +11,7 @@ public class PlayerState : NetworkBehaviour
 	public SyncListInt SelectedAttributes;
     [SyncVar] public string username;
 
-    public List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
+    private List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
 
 	// The number of times a player has cheated
 	public int Cheated;
@@ -62,6 +63,18 @@ public class PlayerState : NetworkBehaviour
         // RouteUIInstance = Instantiate(RouteUI);
         ScoreBoardInstance = Instantiate(ScoreBoard);
     }
+
+	public void AddCollectedData(KeyValuePair<ProfileAttribute, string> data) {
+		collectedData.Add (data);
+	}
+
+	public void RemoveCollectedData(KeyValuePair<ProfileAttribute, string> data) {
+		collectedData.Remove (data);
+	}
+
+	public List<KeyValuePair<ProfileAttribute, string>>.Enumerator GetCollectedDataEnumerator() {
+		return collectedData.GetEnumerator ();
+	}
 
     public void updateTrophyGUI()
     {
