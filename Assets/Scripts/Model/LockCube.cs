@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class LockCube : NetworkBehaviour {
 
 	public ProfileAttribute Key;
-	public GameObject Door;	
+	public GameObject Door;
 
 	[ClientRpc]
 	public void RpcSetActive (bool on) {
@@ -20,8 +20,8 @@ public class LockCube : NetworkBehaviour {
 		Key = p;
 	}
 
-	void OnTriggerEnter(Collider other) {
-//		Debug.Log (Key +" ("+other.gameObject.GetComponent<PlayerState> ().SelectedAttributes.Contains((int) Key)+")");
+	void OnTriggerEnter(Collider other)
+    {
 		if (other.gameObject.tag == "Player")
         {
             var iter = other.gameObject.GetComponent<PlayerState>().GetCollectedDataEnumerator();
@@ -31,7 +31,6 @@ public class LockCube : NetworkBehaviour {
                 {
                     other.gameObject.GetComponent<PlayerState>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
                     other.gameObject.GetComponent<PlayerState>().CmdDestroyLockCube(netId);
-
                     other.gameObject.GetComponent<PlayerState>().RemoveCollectedData(iter.Current);
                     break;
                 }

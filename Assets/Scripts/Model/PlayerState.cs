@@ -13,6 +13,8 @@ public class PlayerState : NetworkBehaviour
     [SyncVar] public string username;
 
     private List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
+    private int doorResetTime = 10;
+
 
 	// The number of times a player has cheated
 	public int Cheated;
@@ -56,8 +58,8 @@ public class PlayerState : NetworkBehaviour
             foreach (Behaviour comp in ComponentsToDisable){
                 comp.enabled = false;
             }
-            setPlayerTag();
-			ScoreBoardInstance.SetActive(false);
+            RpcSetPlayerTag();
+            ScoreBoardInstance.SetActive(false);
         }
         else
         {
@@ -103,11 +105,13 @@ public class PlayerState : NetworkBehaviour
 	public List<KeyValuePair<ProfileAttribute, string>>.Enumerator GetCollectedDataEnumerator() {
 		return collectedData.GetEnumerator ();
 	}
-	
-    public void setPlayerTag()
+
+    public void RpcSetPlayerTag()
     {
         this.gameObject.AddComponent<Tag3D>();
-        this.gameObject.GetComponent<Tag3D>().tagText = username;
+        this.gameObject.GetComponent<Tag3D>().tagText = "BANAAN";
+        Debug.Log(username);
+        Debug.Log(this.gameObject.GetComponent<Tag3D>().tagText);
     }
 
 	void Update(){
@@ -137,37 +141,42 @@ public class PlayerState : NetworkBehaviour
 		theObject.GetComponent<LockCube>().RpcSetActive(false);
 	}
 
-	[Command]
+
+    private NetworkInstanceId _Door_ID;
+
+    [Command]
 	public void CmdIncrementCounter(NetworkInstanceId netID)
 	{
 		GameObject theObject = NetworkServer.FindLocalObject(netID);
+        if (++theObject.GetComponent<UnlockableDoor>().Counter == 3)
+        {
+            // Reset the door.
+            theObject.GetComponent<UnlockableDoor>().RpcSetActive(false);
+            theObject.GetComponent<UnlockableDoor>().RpcSetCounter(0);
 
-		if (++theObject.GetComponent<UnlockableDoor> ().Counter == 3)
-			NetworkManager.Destroy (theObject);
-//			theObject.GetComponent<UnlockableDoor>().RpcSetActive(false);
-	}
+            _Door_ID = netID;
+            Invoke("ResetLocks", doorResetTime);
+        }
+    }
 
-	[Command]
+
 	// Networkinstance should be a door!
-	public void CmdResetLocks(NetworkInstanceId doorNetID, NetworkInstanceId netID1, NetworkInstanceId netID2, NetworkInstanceId netID3)
+	public void ResetLocks()
     {
-        System.Random rnd = new System.Random();
+        GameObject door = NetworkServer.FindLocalObject(_Door_ID);
+        door.SetActive(true);
 
-        GameObject door = NetworkServer.FindLocalObject(doorNetID);
-		door.GetComponent<UnlockableDoor>().RpcSetActive(true);
-		door.GetComponent<UnlockableDoor> ().Counter = 0;
+        door.GetComponent<UnlockableDoor>().RpcSetActive(true);
+		door.GetComponent<UnlockableDoor>().Counter = 0;
 
-		GameObject lock1 = NetworkServer.FindLocalObject(netID1);
-		lock1.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
+		GameObject lock1 = NetworkServer.FindLocalObject(door.GetComponent<UnlockableDoor>().Locks[0].GetComponent<LockCube>().netId);
 		lock1.GetComponent<LockCube> ().RpcSetActive (true);
 
-		GameObject lock2 = NetworkServer.FindLocalObject(netID2);
-		lock2.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
+		GameObject lock2 = NetworkServer.FindLocalObject(door.GetComponent<UnlockableDoor>().Locks[1].GetComponent<LockCube>().netId);
 		lock2.GetComponent<LockCube> ().RpcSetActive (true);
 
-		GameObject lock3 = NetworkServer.FindLocalObject(netID3);
-		lock3.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
-		lock3.GetComponent<LockCube> ().RpcSetActive (true);
+		GameObject lock3 = NetworkServer.FindLocalObject(door.GetComponent<UnlockableDoor>().Locks[2].GetComponent<LockCube>().netId);
+        lock3.GetComponent<LockCube> ().RpcSetActive (true);
 	}
 
     [Command]
