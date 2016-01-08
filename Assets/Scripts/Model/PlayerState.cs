@@ -12,6 +12,8 @@ public class PlayerState : NetworkBehaviour
     public SyncListInt SelectedAttributes;
     [SyncVar] public string username;
 
+    public bool freeze = false;
+
     private List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
     private int doorResetTime = 10;
 

@@ -46,6 +46,16 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
+        // When freeze is on (I.E a forced GUI) then the player will not move or rotate the camera.
+        if (gameObject.GetComponent<PlayerState>().freeze)
+        {
+            Vector3 velocity = Vector3.zero;
+            motor.Move(velocity);
+            motor.RotateCamera(new Vector3(0.0f, 0.0f, 0.0f));
+            motor.Rotate(new Vector3(0.0f, 0.0f, 0.0f));
+            return;
+        }
+
         if (serverLogic.GameStarted)
         {
             // Calculate velocity as a 3D vector
@@ -97,14 +107,11 @@ public class PlayerController : NetworkBehaviour
 				state.ScoreBoardInstance.GetComponentInChildren<Score>().AddOnePointTo(state.Team);
 			}
 		}
-//        {
-//            c.gameObject.SetActive(false);
-//            if (GameObject.FindGameObjectsWithTag("Trophy").Length == 0)
-//                this.CmdEndGame();
-//        }
 
         if (c.gameObject.tag == "Player")
         {
+            gameObject.GetComponent<PlayerState>().freeze = true;
+
             Transform panel = DataExchangeCanvas.transform.Find("DataExchangePanel");
             Text dataExchangeGUIText = panel.transform.Find("DataExchangePlayerIDText").GetComponent<Text>();
             dataExchangeGUIText.text = c.gameObject.GetComponent<PlayerState>().username;
@@ -114,6 +121,7 @@ public class PlayerController : NetworkBehaviour
             {
                 Destroy(trans.gameObject);
             }
+
             foreach (ProfileAttribute attr in Enum.GetValues(typeof(ProfileAttribute)))
             {
                 GameObject newButton = Instantiate(ButtonPrefab) as GameObject;
@@ -123,6 +131,7 @@ public class PlayerController : NetworkBehaviour
                 ProfileAttribute attrClone = attr;
                 button.onClick.AddListener(() =>
                 {
+                    gameObject.GetComponent<PlayerState>().freeze = false;
                     CmdAskQuestion(attrClone, this.gameObject, c.gameObject);
                     DataExchangeCanvas.SetActive(false);
                 });
