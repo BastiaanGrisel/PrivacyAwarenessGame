@@ -36,15 +36,20 @@ public class PlayerState : NetworkBehaviour
 	void Awake()
     {
 		SelectedAttributes = new SyncListInt();
-		SelectedAttributes.Callback = OnSelectedAttributedChanged;
 		Route = new SyncListInt ();
 		Cheated = 0;
+	}
+
+	public override void OnStartClient() {
+		Route.Callback = OnRouteChanged;
+		SelectedAttributes.Callback = OnSelectedAttributedChanged;
 	}
 
     void Start()
     {
         ServerLogic = GameObject.Find ("Game").GetComponent<ServerLogic> ();
 		ServerLogic.RegisterPlayer(this);
+		ScoreBoardInstance = Instantiate(ScoreBoard);
 
         if (!isLocalPlayer)
         {
@@ -52,6 +57,7 @@ public class PlayerState : NetworkBehaviour
                 comp.enabled = false;
             }
             setPlayerTag();
+			ScoreBoardInstance.SetActive(false);
         }
         else
         {
@@ -61,13 +67,21 @@ public class PlayerState : NetworkBehaviour
                 SceneCamera.gameObject.SetActive(false);
             }
         }
-
-        // RouteUIInstance = Instantiate(RouteUI);
-        ScoreBoardInstance = Instantiate(ScoreBoard);
     }
 
+	public void OnRouteChanged(SyncListInt.Operation op, int index) {
+		UpdateRouteUI ();
+	}
+
 	public void OnSelectedAttributedChanged(SyncListInt.Operation op, int index) {
-		// Show own data in UI
+		UpdateOwnDataUI ();
+	}
+
+	public void UpdateRouteUI() {
+		ScoreBoardInstance.transform.Find ("RouteText").GetComponent<Text> ().text = "Route: " + string.Join (", ", Route.Select (r => r.ToString ()).ToArray ());
+	}
+
+	public void UpdateOwnDataUI() {
 		string[] OwnData = SelectedAttributes.Select (a => ServerLogic.Profiles [ProfileIndex] [a]).ToArray ();
 		ScoreBoardInstance.transform.Find("OwnDataText").GetComponent<Text>().text = string.Join("\n", OwnData);
 	}
@@ -107,8 +121,11 @@ public class PlayerState : NetworkBehaviour
     }
 
 	void Update(){
-		if (Input.GetKeyDown ("v"))
+		if (Input.GetKeyDown ("v") && isLocalPlayer)
 			Debug.Log (Route [0] + ", " + Route [1] + ", " + Route [2] + ", " + Route [3]);
+
+		if (Input.GetKeyDown ("b") && isLocalPlayer)
+			Debug.Log (string.Join(", ", SelectedAttributes.Select (a => ServerLogic.Profiles [ProfileIndex] [a]).ToArray ()));
 	}
 
     void OnDisable()

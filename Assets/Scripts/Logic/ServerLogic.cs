@@ -79,7 +79,7 @@ public class ServerLogic : NetworkBehaviour
 				}
 			}
 
-            Players[i].updateTrophyGUI();
+//            Players[i].updateTrophyGUI();
 		
 			// Assign each player a team
 			Players[i].Team = i % 2;
