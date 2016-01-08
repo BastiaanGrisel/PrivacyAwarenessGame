@@ -39,4 +39,10 @@ public class UnlockableDoor : NetworkBehaviour {
 		gameObject.GetComponent<MeshRenderer> ().enabled = on;
 		gameObject.GetComponent<BoxCollider> ().enabled = on;
 	}
+
+    [ClientRpc]
+    public void RpcSetCounter(int counter)
+    {
+        Counter = counter;
+    }
 }

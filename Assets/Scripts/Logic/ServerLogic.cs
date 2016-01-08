@@ -13,7 +13,8 @@ public class ServerLogic : NetworkBehaviour
     // Game properties
     public List<Profile> Profiles = new List<Profile>();
 	private List<PlayerState> Players;
-	
+	public GameObject ScoreBoardInstance;
+
     public void Awake()
     {
         // Initialize all the profiles.
@@ -31,8 +32,6 @@ public class ServerLogic : NetworkBehaviour
 		Players = new List<PlayerState> ();
     }
 	
-
-
     // Dynamically assigns a Player certain data.
     public void RegisterPlayer(PlayerState player)
     {
@@ -53,7 +52,7 @@ public class ServerLogic : NetworkBehaviour
 	[Server]
 	void StartGame() {
 		// Calculate the amount of attributes each player needs to get to ensure allt he attributes are in the game
-		int AttributesPerPlayer = (int) Math.Max (3, Math.Ceiling ((double) Profile.TotalNumberOfAttributes() / (double) Players.Count));
+		int AttributesPerPlayer = 3;//(int) Math.Max (3, Math.Ceiling ((double) Profile.TotalNumberOfAttributes() / (double) Players.Count));
 
 		// Generate a list of all the attributes in random order
 		List<ProfileAttribute> AllAttributes = Enum.GetValues(typeof(ProfileAttribute)).Cast<ProfileAttribute>().OrderBy(a => UnityEngine.Random.value).ToList ();
@@ -62,9 +61,6 @@ public class ServerLogic : NetworkBehaviour
 		for (int i = 0; i < Players.Count; i++)
         {
 			Players[i].ProfileIndex = i;
-
-			// Add a unique route to each player
-			Enumerable.Range(0,4).OrderBy(r => UnityEngine.Random.value).ToList().ForEach(r => Players[i].Route.Add(r));
 
 			for(int j = 0; j < AttributesPerPlayer; j++)
             {
@@ -78,16 +74,14 @@ public class ServerLogic : NetworkBehaviour
 					Players[i].SelectedAttributes.Add ((int) AllAttributes.Find(a => !Players[i].SelectedAttributes.Contains((int) a)));
 				}
 			}
-
-            Players[i].updateTrophyGUI();
-		
+					
 			// Assign each player a team
 			Players[i].Team = i % 2;
-		}
+        }
 
 		// Start the game
 		GameStarted = true;
 
-        GameObject.Find("Notification").GetComponent<Notification>().Notify("Game started!");
+        Players[0].CmdBroadcastNotification("Game started!");
     }
 }

@@ -2,61 +2,73 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
 
 public class PlayerState : NetworkBehaviour
 {
     // Profile that the player is using
     [SyncVar] public int ProfileIndex;
-	public SyncListInt SelectedAttributes;
+	public SyncListInt SelectedAttributes = new SyncListInt();
     [SyncVar] public string username;
     [SyncVar] public bool isQuestioning;
     [SyncVar] public bool isAnswering;
     [SyncVar] public bool isWaitingforQuestion;
     [SyncVar] public uint communicationWithId;
 
-    public List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
+    public bool freeze = false;
+
+    private List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
+    private int doorResetTime = 10;
 
 	// The number of times a player has cheated
 	public int Cheated;
-	public int Team;  
-	public SyncListInt Route;
+	[SyncVar] public int Team;  
+	public List<int> Route = new List<int>();
 
     [SerializeField]
-	private Behaviour[] ComponentsToDisable;
+    private Behaviour[] ComponentsToDisable;
     private Camera SceneCamera;
 
-	public GameObject KeysHUD;
+    public GameObject KeysHUD;
+    [SerializeField]
+    private GameObject HUD;
+    public GameObject HUDInstance;
 	[SerializeField]
 	private GameObject ScoreBoard;
-	public GameObject ScoreBoardInstance;
-	[SerializeField]
-	private GameObject RouteUI;
-	public GameObject RouteUIInstance;
 
-	private ServerLogic ServerLogic;
-    
-	void Awake()
+    private ServerLogic ServerLogic;
+
+    void Awake()
     {
-		SelectedAttributes = new SyncListInt();
-		Route = new SyncListInt ();
 		Cheated = 0;
         isQuestioning = false;
         isAnswering = false;
         isWaitingforQuestion = false;
         communicationWithId = NetworkInstanceId.Invalid.Value;
+		Enumerable.Range(0,4).OrderBy(r => UnityEngine.Random.value).ToList().ForEach(r => Route.Add(r));
+	}
+
+	public override void OnStartClient() {
+		SelectedAttributes.Callback = OnSelectedAttributedChanged;
 	}
 
     void Start()
     {
-        ServerLogic = GameObject.Find ("Game").GetComponent<ServerLogic> ();
-		ServerLogic.RegisterPlayer(this);
+        ServerLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
+        ServerLogic.RegisterPlayer(this);
+
+        HUDInstance = Instantiate(HUD);
+
+        setPlayerTag();
 
         if (!isLocalPlayer)
         {
-            foreach (Behaviour comp in ComponentsToDisable){
+            foreach (Behaviour comp in ComponentsToDisable) {
                 comp.enabled = false;
             }
-            setPlayerTag();
+
+            HUDInstance.SetActive(false);
         }
         else
         {
@@ -65,29 +77,60 @@ public class PlayerState : NetworkBehaviour
             {
                 SceneCamera.gameObject.SetActive(false);
             }
+			ServerLogic.ScoreBoardInstance = Instantiate(ScoreBoard);
         }
-
-        // RouteUIInstance = Instantiate(RouteUI);
-        ScoreBoardInstance = Instantiate(ScoreBoard);
     }
 
-    public void updateTrophyGUI()
-    {
-        // Set the Trophy Tracker UI.
-        GameObject.Find("Trophy Tracker").GetComponent<Text>().text = "Trophy Order: ";
-        for (int i = 0; i < Route.Count; i++)
-            GameObject.Find("Trophy Tracker").GetComponent<Text>().text += Route[i].ToString() + " ";
+	public void RemoveFirstRouteItem() {
+		Route.RemoveAt (0);
+		UpdateRouteUI ();
+	}
+
+	public void OnSelectedAttributedChanged(SyncListInt.Operation op, int index) {
+		UpdateOwnDataUI ();
+		UpdateRouteUI();
+	}
+
+    public void UpdateRouteUI() {
+        HUDInstance.transform.Find("RouteText").GetComponent<Text>().text = "Route: " + string.Join(", ", Route.Select(r => r.ToString()).ToArray());
+    }
+
+    public void UpdateOwnDataUI() {
+        string[] OwnData = SelectedAttributes.Select(a => ServerLogic.Profiles[ProfileIndex][a]).ToArray();
+        HUDInstance.transform.Find("OwnDataText").GetComponent<Text>().text = string.Join("\n", OwnData);
+    }
+
+    public void UpdateCollectedDataUI() {
+        HUDInstance.transform.Find("CollectedDataText").GetComponent<Text>().text = string.Join("\n", collectedData.Select(d => d.Value).ToArray());
+    }
+
+    public void AddCollectedData(KeyValuePair<ProfileAttribute, string> data) {
+        collectedData.Add(data);
+        UpdateCollectedDataUI();
+    }
+
+    public void RemoveCollectedData(KeyValuePair<ProfileAttribute, string> data) {
+        collectedData.Remove(data);
+        UpdateCollectedDataUI();
+    }
+
+    public List<KeyValuePair<ProfileAttribute, string>>.Enumerator GetCollectedDataEnumerator() {
+        return collectedData.GetEnumerator();
     }
 
     public void setPlayerTag()
     {
-        this.gameObject.AddComponent<Tag3D>();
-        this.gameObject.GetComponent<Tag3D>().tagText = username;
+        gameObject.AddComponent<Tag3D>();
+        gameObject.GetComponent<Tag3D>().tagText = username;
+        gameObject.GetComponent<Tag3D>().color = Color.white;
     }
 
 	void Update(){
-		if (Input.GetKeyDown ("v"))
+		if (Input.GetKeyDown ("v") && isLocalPlayer)
 			Debug.Log (Route [0] + ", " + Route [1] + ", " + Route [2] + ", " + Route [3]);
+
+		if (Input.GetKeyDown ("b") && isLocalPlayer)
+			Debug.Log (string.Join(", ", SelectedAttributes.Select (a => ServerLogic.Profiles [ProfileIndex] [a]).ToArray ()));
 	}
 
     void OnDisable()
@@ -109,37 +152,42 @@ public class PlayerState : NetworkBehaviour
 		theObject.GetComponent<LockCube>().RpcSetActive(false);
 	}
 
-	[Command]
+
+    private NetworkInstanceId _Door_ID;
+
+    [Command]
 	public void CmdIncrementCounter(NetworkInstanceId netID)
 	{
 		GameObject theObject = NetworkServer.FindLocalObject(netID);
+        if (++theObject.GetComponent<UnlockableDoor>().Counter == 3)
+        {
+            // Reset the door.
+            theObject.GetComponent<UnlockableDoor>().RpcSetActive(false);
+            theObject.GetComponent<UnlockableDoor>().RpcSetCounter(0);
 
-		if (++theObject.GetComponent<UnlockableDoor> ().Counter == 3)
-			NetworkManager.Destroy (theObject);
-//			theObject.GetComponent<UnlockableDoor>().RpcSetActive(false);
-	}
+            _Door_ID = netID;
+            Invoke("ResetLocks", doorResetTime);
+        }
+    }
 
-	[Command]
+
 	// Networkinstance should be a door!
-	public void CmdResetLocks(NetworkInstanceId doorNetID, NetworkInstanceId netID1, NetworkInstanceId netID2, NetworkInstanceId netID3)
+	public void ResetLocks()
     {
-        System.Random rnd = new System.Random();
+        GameObject door = NetworkServer.FindLocalObject(_Door_ID);
+        door.SetActive(true);
 
-        GameObject door = NetworkServer.FindLocalObject(doorNetID);
-		door.GetComponent<UnlockableDoor>().RpcSetActive(true);
-		door.GetComponent<UnlockableDoor> ().Counter = 0;
+        door.GetComponent<UnlockableDoor>().RpcSetActive(true);
+		door.GetComponent<UnlockableDoor>().Counter = 0;
 
-		GameObject lock1 = NetworkServer.FindLocalObject(netID1);
-		lock1.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
+		GameObject lock1 = NetworkServer.FindLocalObject(door.GetComponent<UnlockableDoor>().Locks[0].GetComponent<LockCube>().netId);
 		lock1.GetComponent<LockCube> ().RpcSetActive (true);
 
-		GameObject lock2 = NetworkServer.FindLocalObject(netID2);
-		lock2.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
+		GameObject lock2 = NetworkServer.FindLocalObject(door.GetComponent<UnlockableDoor>().Locks[1].GetComponent<LockCube>().netId);
 		lock2.GetComponent<LockCube> ().RpcSetActive (true);
 
-		GameObject lock3 = NetworkServer.FindLocalObject(netID3);
-		lock3.GetComponent<LockCube> ().Key = (ProfileAttribute) rnd.Next (1, 4);
-		lock3.GetComponent<LockCube> ().RpcSetActive (true);
+		GameObject lock3 = NetworkServer.FindLocalObject(door.GetComponent<UnlockableDoor>().Locks[2].GetComponent<LockCube>().netId);
+        lock3.GetComponent<LockCube> ().RpcSetActive (true);
 	}
 
     [Command]
@@ -171,5 +219,16 @@ public class PlayerState : NetworkBehaviour
     public void CmdCommunicationWithId(uint id)
     {
         communicationWithId = id;
+    }
+    public void CmdBroadcastNotification(string message)
+    {
+        RpcBroadcastNotification(message);
+    }
+
+    [ClientRpc]
+    public void RpcBroadcastNotification(string message)
+    {
+        GameObject notification = GameObject.Find("Notification");
+        notification.GetComponent<Notification>().Notify(message);
     }
 }

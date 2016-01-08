@@ -46,6 +46,16 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
+        // When freeze is on (I.E a forced GUI) then the player will not move or rotate the camera.
+        if (gameObject.GetComponent<PlayerState>().freeze)
+        {
+            Vector3 velocity = Vector3.zero;
+            motor.Move(velocity);
+            motor.RotateCamera(new Vector3(0.0f, 0.0f, 0.0f));
+            motor.Rotate(new Vector3(0.0f, 0.0f, 0.0f));
+            return;
+        }
+
         if (serverLogic.GameStarted)
         {
             // Calculate velocity as a 3D vector
@@ -83,25 +93,31 @@ public class PlayerController : NetworkBehaviour
         motor.RotateCamera(cameraRotation);
     }
 
+	[Command]
+	public void CmdAddPointTo(int Team) {
+		RpcAddPointTo (Team);
+	}
+
+	[ClientRpc]
+	public void RpcAddPointTo(int Team) {
+		serverLogic.ScoreBoardInstance.GetComponentInChildren<Score>().AddOnePointTo(Team);
+	}
+
     void OnCollisionEnter(Collision c)
     {
         // Also when the controller is disabled it will enter the OnCollisionEnter.
         if (!isLocalPlayer)
             return;
+
         if (c.gameObject.tag == "Trophy" && state.Route.Count > 0 && c.gameObject.GetComponent<Trophy> ().Number == state.Route [0]) {
 
 			c.gameObject.SetActive(false);
-			state.Route.RemoveAt(0);
+			state.RemoveFirstRouteItem();
 
 			if(state.Route.Count == 0) {
-				state.ScoreBoardInstance.GetComponentInChildren<Score>().AddOnePointTo(state.Team);
+				CmdAddPointTo(state.Team);
 			}
 		}
-//        {
-//            c.gameObject.SetActive(false);
-//            if (GameObject.FindGameObjectsWithTag("Trophy").Length == 0)
-//                this.CmdEndGame();
-//        }
 
         if (c.gameObject.tag == "Player")
         {
@@ -119,6 +135,9 @@ public class PlayerController : NetworkBehaviour
             state.CmdIsQuestioning(true);
             state.CmdIsWaitingforQuestion(true);
             state.CmdCommunicationWithId(otherPlayerState.netId.Value);
+            
+            gameObject.GetComponent<PlayerState>().freeze = true;
+
             Transform panel = DataExchangeCanvas.transform.Find("DataExchangePanel");
             Text dataExchangeGUIText = panel.transform.Find("DataExchangePlayerIDText").GetComponent<Text>();
             dataExchangeGUIText.text = c.gameObject.GetComponent<PlayerState>().username;
@@ -128,6 +147,7 @@ public class PlayerController : NetworkBehaviour
             {
                 Destroy(trans.gameObject);
             }
+
             foreach (ProfileAttribute attr in Enum.GetValues(typeof(ProfileAttribute)))
             {
                 GameObject newButton = Instantiate(ButtonPrefab) as GameObject;
@@ -137,6 +157,7 @@ public class PlayerController : NetworkBehaviour
                 ProfileAttribute attrClone = attr;
                 button.onClick.AddListener(() =>
                 {
+                    gameObject.GetComponent<PlayerState>().freeze = false;
                     CmdAskQuestion(attrClone, this.gameObject, c.gameObject);
                     DataExchangeCanvas.SetActive(false);
                     state.CmdIsQuestioning(false);
@@ -203,7 +224,12 @@ public class PlayerController : NetworkBehaviour
             Button lButton = lieButton.GetComponent<Button>();
             lButton.onClick.AddListener(() =>
             {
-                CmdAnswerQuestion(attr, "", requester, questioned);
+                System.Random rnd = new System.Random();
+                GameObject logic = GameObject.Find("Game");
+
+                Profile prof = logic.GetComponent<ServerLogic>().Profiles[rnd.Next() % logic.GetComponent<ServerLogic>().Profiles.Count];
+
+                CmdAnswerQuestion(attr, prof[(int)attr] + " ", requester, questioned);
                 AnswerCanvas.SetActive(false);
                 state.CmdIsAnswering(false);
                 if (!state.isQuestioning)
@@ -235,7 +261,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (this.gameObject.Equals(requester) && isLocalPlayer)
         {
-            state.collectedData.Add(new KeyValuePair<ProfileAttribute, string>(attr, answer));
+            state.AddCollectedData(new KeyValuePair<ProfileAttribute, string>(attr, answer));
             GameObject.Find("Notification").GetComponent<Notification>().Notify(questioned.GetComponent<PlayerState>().username + " heeft je vraag over " + ProfileAttributeExt.ToFriendlyString(attr) + " beantwoord");
         }
     }

@@ -28,11 +28,12 @@ public class NetworkManager : UnityEngine.Networking.NetworkManager
             GameObject player = (GameObject)GameObject.Instantiate(playerPrefab, GetStartPosition().position, Quaternion.identity);
             player.GetComponent<PlayerState>().username = username;
             NetworkServer.AddPlayerForConnection(connection, player, playerControllerId);
+            player.GetComponent<PlayerState>().CmdBroadcastNotification(username + " connected to the game!");
         }
         else
             // [Todo] Handle players disconnecting, and reconnecting later.
             Network.maxConnections = 0;
 
-       GameObject.Find("Notification").GetComponent<Notification>().Notify(username + " connected to the game!");
+        
     }
 }
