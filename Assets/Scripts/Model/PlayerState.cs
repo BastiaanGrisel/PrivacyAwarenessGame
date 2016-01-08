@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 public class PlayerState : NetworkBehaviour
 {
@@ -64,12 +65,18 @@ public class PlayerState : NetworkBehaviour
         ScoreBoardInstance = Instantiate(ScoreBoard);
     }
 
+	public void UpdateCollectedDataUI() {
+		ScoreBoard.transform.Find("CollectedDataText").GetComponent<Text>().text = string.Join("\n",collectedData.Select(d => d.Value).ToArray());
+	}
+
 	public void AddCollectedData(KeyValuePair<ProfileAttribute, string> data) {
 		collectedData.Add (data);
+		UpdateCollectedDataUI ();
 	}
 
 	public void RemoveCollectedData(KeyValuePair<ProfileAttribute, string> data) {
 		collectedData.Remove (data);
+		UpdateCollectedDataUI ();
 	}
 
 	public List<KeyValuePair<ProfileAttribute, string>>.Enumerator GetCollectedDataEnumerator() {
