@@ -186,4 +186,17 @@ public class PlayerState : NetworkBehaviour
         // [TODO] ... Add pair to collectedData.
 
     }
+
+    [Command]
+    public void CmdBroadcastNotification(string message)
+    {
+        RpcBroadcastNotification(message);
+    }
+
+    [ClientRpc]
+    public void RpcBroadcastNotification(string message)
+    {
+        GameObject notification = GameObject.Find("Notification");
+        notification.GetComponent<Notification>().Notify(message);
+    }
 }

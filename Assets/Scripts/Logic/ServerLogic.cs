@@ -84,6 +84,6 @@ public class ServerLogic : NetworkBehaviour
 		// Start the game
 		GameStarted = true;
 
-        GameObject.Find("Notification").GetComponent<Notification>().Notify("Game started!");
+        Players[0].CmdBroadcastNotification("Game started!");
     }
 }
