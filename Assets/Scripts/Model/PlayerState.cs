@@ -17,7 +17,7 @@ public class PlayerState : NetworkBehaviour
 
 	// The number of times a player has cheated
 	public int Cheated;
-	public int Team;  
+	[SyncVar] public int Team;  
 	public List<int> Route = new List<int>();
 
     [SerializeField]
@@ -26,11 +26,10 @@ public class PlayerState : NetworkBehaviour
 
     public GameObject KeysHUD;
     [SerializeField]
-    private GameObject ScoreBoard;
-    public GameObject ScoreBoardInstance;
-    [SerializeField]
-    private GameObject RouteUI;
-    public GameObject RouteUIInstance;
+    private GameObject HUD;
+    public GameObject HUDInstance;
+	[SerializeField]
+	private GameObject ScoreBoard;
 
     private ServerLogic ServerLogic;
 
@@ -48,7 +47,8 @@ public class PlayerState : NetworkBehaviour
     {
         ServerLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
         ServerLogic.RegisterPlayer(this);
-        ScoreBoardInstance = Instantiate(ScoreBoard);
+
+        HUDInstance = Instantiate(HUD);
 
         setPlayerTag();
 
@@ -58,7 +58,7 @@ public class PlayerState : NetworkBehaviour
                 comp.enabled = false;
             }
 
-            ScoreBoardInstance.SetActive(false);
+            HUDInstance.SetActive(false);
         }
         else
         {
@@ -67,6 +67,7 @@ public class PlayerState : NetworkBehaviour
             {
                 SceneCamera.gameObject.SetActive(false);
             }
+			ServerLogic.ScoreBoardInstance = Instantiate(ScoreBoard);
         }
     }
 
@@ -81,16 +82,16 @@ public class PlayerState : NetworkBehaviour
 	}
 
     public void UpdateRouteUI() {
-        ScoreBoardInstance.transform.Find("RouteText").GetComponent<Text>().text = "Route: " + string.Join(", ", Route.Select(r => r.ToString()).ToArray());
+        HUDInstance.transform.Find("RouteText").GetComponent<Text>().text = "Route: " + string.Join(", ", Route.Select(r => r.ToString()).ToArray());
     }
 
     public void UpdateOwnDataUI() {
         string[] OwnData = SelectedAttributes.Select(a => ServerLogic.Profiles[ProfileIndex][a]).ToArray();
-        ScoreBoardInstance.transform.Find("OwnDataText").GetComponent<Text>().text = string.Join("\n", OwnData);
+        HUDInstance.transform.Find("OwnDataText").GetComponent<Text>().text = string.Join("\n", OwnData);
     }
 
     public void UpdateCollectedDataUI() {
-        ScoreBoardInstance.transform.Find("CollectedDataText").GetComponent<Text>().text = string.Join("\n", collectedData.Select(d => d.Value).ToArray());
+        HUDInstance.transform.Find("CollectedDataText").GetComponent<Text>().text = string.Join("\n", collectedData.Select(d => d.Value).ToArray());
     }
 
     public void AddCollectedData(KeyValuePair<ProfileAttribute, string> data) {

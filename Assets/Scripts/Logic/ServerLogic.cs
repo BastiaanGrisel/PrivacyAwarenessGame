@@ -13,7 +13,8 @@ public class ServerLogic : NetworkBehaviour
     // Game properties
     public List<Profile> Profiles = new List<Profile>();
 	private List<PlayerState> Players;
-	
+	public GameObject ScoreBoardInstance;
+
     public void Awake()
     {
         // Initialize all the profiles.

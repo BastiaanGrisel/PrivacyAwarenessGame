@@ -83,6 +83,16 @@ public class PlayerController : NetworkBehaviour
         motor.RotateCamera(cameraRotation);
     }
 
+	[Command]
+	public void CmdAddPointTo(int Team) {
+		RpcAddPointTo (Team);
+	}
+
+	[ClientRpc]
+	public void RpcAddPointTo(int Team) {
+		serverLogic.ScoreBoardInstance.GetComponentInChildren<Score>().AddOnePointTo(Team);
+	}
+
     void OnCollisionEnter(Collision c)
     {
         // Also when the controller is disabled it will enter the OnCollisionEnter.
@@ -95,7 +105,7 @@ public class PlayerController : NetworkBehaviour
 			state.RemoveFirstRouteItem();
 
 			if(state.Route.Count == 0) {
-				state.ScoreBoardInstance.GetComponentInChildren<Score>().AddOnePointTo(state.Team);
+				CmdAddPointTo(state.Team);
 			}
 		}
 //        {
