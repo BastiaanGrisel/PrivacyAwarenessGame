@@ -36,6 +36,7 @@ public class PlayerState : NetworkBehaviour
 	void Awake()
     {
 		SelectedAttributes = new SyncListInt();
+		SelectedAttributes.Callback = OnSelectedAttributedChanged;
 		Route = new SyncListInt ();
 		Cheated = 0;
 	}
@@ -65,8 +66,16 @@ public class PlayerState : NetworkBehaviour
         ScoreBoardInstance = Instantiate(ScoreBoard);
     }
 
+	public void OnSelectedAttributedChanged(SyncListInt.Operation op, int index) {
+		// Show own data in UI
+		string[] OwnData = SelectedAttributes.Select (a => ServerLogic.Profiles [ProfileIndex] [a]).ToArray ();
+		ScoreBoardInstance.transform.Find("OwnDataText").GetComponent<Text>().text = string.Join("\n", OwnData);
+	}
+
 	public void UpdateCollectedDataUI() {
-		ScoreBoard.transform.Find("CollectedDataText").GetComponent<Text>().text = string.Join("\n",collectedData.Select(d => d.Value).ToArray());
+		Debug.Log ("Update");
+		Debug.Log (string.Join (", ", collectedData.Select (d => d.Value).ToArray ()));
+		ScoreBoardInstance.transform.Find("CollectedDataText").GetComponent<Text>().text = string.Join("\n",collectedData.Select(d => d.Value).ToArray());
 	}
 
 	public void AddCollectedData(KeyValuePair<ProfileAttribute, string> data) {

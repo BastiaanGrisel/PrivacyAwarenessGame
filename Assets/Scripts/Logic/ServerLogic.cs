@@ -53,7 +53,7 @@ public class ServerLogic : NetworkBehaviour
 	[Server]
 	void StartGame() {
 		// Calculate the amount of attributes each player needs to get to ensure allt he attributes are in the game
-		int AttributesPerPlayer = (int) Math.Max (3, Math.Ceiling ((double) Profile.TotalNumberOfAttributes() / (double) Players.Count));
+		int AttributesPerPlayer = 3;//(int) Math.Max (3, Math.Ceiling ((double) Profile.TotalNumberOfAttributes() / (double) Players.Count));
 
 		// Generate a list of all the attributes in random order
 		List<ProfileAttribute> AllAttributes = Enum.GetValues(typeof(ProfileAttribute)).Cast<ProfileAttribute>().OrderBy(a => UnityEngine.Random.value).ToList ();
