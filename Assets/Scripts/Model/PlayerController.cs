@@ -184,7 +184,12 @@ public class PlayerController : NetworkBehaviour
             Button lButton = lieButton.GetComponent<Button>();
             lButton.onClick.AddListener(() =>
             {
-                CmdAnswerQuestion(attr, "", requester, questioned);
+                System.Random rnd = new System.Random();
+                GameObject logic = GameObject.Find("Game");
+
+                Profile prof = logic.GetComponent<ServerLogic>().Profiles[rnd.Next() % logic.GetComponent<ServerLogic>().Profiles.Count];
+
+                CmdAnswerQuestion(attr, prof[(int)attr] + " ", requester, questioned);
                 AnswerCanvas.SetActive(false);
             });
 

@@ -27,10 +27,16 @@ public class LockCube : NetworkBehaviour {
             var iter = other.gameObject.GetComponent<PlayerState>().GetCollectedDataEnumerator();
             while (iter.MoveNext())
             {
-                if (iter.Current.Key == this.Key && iter.Current.Value != "")
+                if (iter.Current.Key == this.Key && !iter.Current.Value.EndsWith(" "))
                 {
                     other.gameObject.GetComponent<PlayerState>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
                     other.gameObject.GetComponent<PlayerState>().CmdDestroyLockCube(netId);
+                    other.gameObject.GetComponent<PlayerState>().RemoveCollectedData(iter.Current);
+                    break;
+                }
+                else if (iter.Current.Key == this.Key && iter.Current.Value.EndsWith(" "))
+                {
+                    GameObject.Find("Notification").GetComponent<Notification>().Notify(iter.Current.Value + "is fake data!");
                     other.gameObject.GetComponent<PlayerState>().RemoveCollectedData(iter.Current);
                     break;
                 }
