@@ -98,10 +98,11 @@ public class PlayerController : NetworkBehaviour
         // Also when the controller is disabled it will enter the OnCollisionEnter.
         if (!isLocalPlayer)
             return;
+
         if (c.gameObject.tag == "Trophy" && state.Route.Count > 0 && c.gameObject.GetComponent<Trophy> ().Number == state.Route [0]) {
 
 			c.gameObject.SetActive(false);
-			state.Route.RemoveAt(0);
+			state.RemoveFirstRouteItem();
 
 			if(state.Route.Count == 0) {
 				state.ScoreBoardInstance.GetComponentInChildren<Score>().AddOnePointTo(state.Team);

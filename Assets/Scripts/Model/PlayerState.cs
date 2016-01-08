@@ -9,7 +9,7 @@ public class PlayerState : NetworkBehaviour
 {
     // Profile that the player is using
     [SyncVar] public int ProfileIndex;
-    public SyncListInt SelectedAttributes;
+	public SyncListInt SelectedAttributes = new SyncListInt();
     [SyncVar] public string username;
 
     public bool freeze = false;
@@ -17,11 +17,10 @@ public class PlayerState : NetworkBehaviour
     private List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
     private int doorResetTime = 10;
 
-
-    // The number of times a player has cheated
-    public int Cheated;
-    public int Team;
-    public SyncListInt Route;
+	// The number of times a player has cheated
+	public int Cheated;
+	public int Team;  
+	public List<int> Route = new List<int>();
 
     [SerializeField]
     private Behaviour[] ComponentsToDisable;
@@ -39,15 +38,13 @@ public class PlayerState : NetworkBehaviour
 
     void Awake()
     {
-        SelectedAttributes = new SyncListInt();
-        Route = new SyncListInt();
-        Cheated = 0;
-    }
+		Cheated = 0;
+		Enumerable.Range(0,4).OrderBy(r => UnityEngine.Random.value).ToList().ForEach(r => Route.Add(r));
+	}
 
-    public override void OnStartClient() {
-        Route.Callback = OnRouteChanged;
-        SelectedAttributes.Callback = OnSelectedAttributedChanged;
-    }
+	public override void OnStartClient() {
+		SelectedAttributes.Callback = OnSelectedAttributedChanged;
+	}
 
     void Start()
     {
@@ -75,13 +72,15 @@ public class PlayerState : NetworkBehaviour
         }
     }
 
-    public void OnRouteChanged(SyncListInt.Operation op, int index) {
-        UpdateRouteUI();
-    }
+	public void RemoveFirstRouteItem() {
+		Route.RemoveAt (0);
+		UpdateRouteUI ();
+	}
 
-    public void OnSelectedAttributedChanged(SyncListInt.Operation op, int index) {
-        UpdateOwnDataUI();
-    }
+	public void OnSelectedAttributedChanged(SyncListInt.Operation op, int index) {
+		UpdateOwnDataUI ();
+		UpdateRouteUI();
+	}
 
     public void UpdateRouteUI() {
         ScoreBoardInstance.transform.Find("RouteText").GetComponent<Text>().text = "Route: " + string.Join(", ", Route.Select(r => r.ToString()).ToArray());
