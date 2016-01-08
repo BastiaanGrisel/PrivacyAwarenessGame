@@ -78,9 +78,7 @@ public class ServerLogic : NetworkBehaviour
 					Players[i].SelectedAttributes.Add ((int) AllAttributes.Find(a => !Players[i].SelectedAttributes.Contains((int) a)));
 				}
 			}
-
-//            Players[i].updateTrophyGUI();
-		
+					
 			// Assign each player a team
 			Players[i].Team = i % 2;
 		}

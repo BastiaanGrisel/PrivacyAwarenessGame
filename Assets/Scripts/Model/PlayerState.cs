@@ -87,8 +87,6 @@ public class PlayerState : NetworkBehaviour
 	}
 
 	public void UpdateCollectedDataUI() {
-		Debug.Log ("Update");
-		Debug.Log (string.Join (", ", collectedData.Select (d => d.Value).ToArray ()));
 		ScoreBoardInstance.transform.Find("CollectedDataText").GetComponent<Text>().text = string.Join("\n",collectedData.Select(d => d.Value).ToArray());
 	}
 
@@ -105,15 +103,7 @@ public class PlayerState : NetworkBehaviour
 	public List<KeyValuePair<ProfileAttribute, string>>.Enumerator GetCollectedDataEnumerator() {
 		return collectedData.GetEnumerator ();
 	}
-
-    public void updateTrophyGUI()
-    {
-        // Set the Trophy Tracker UI.
-        GameObject.Find("Trophy Tracker").GetComponent<Text>().text = "Trophy Order: ";
-        for (int i = 0; i < Route.Count; i++)
-            GameObject.Find("Trophy Tracker").GetComponent<Text>().text += Route[i].ToString() + " ";
-    }
-
+	
     public void setPlayerTag()
     {
         this.gameObject.AddComponent<Tag3D>();
