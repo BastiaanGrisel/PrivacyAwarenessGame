@@ -9,56 +9,58 @@ public class PlayerState : NetworkBehaviour
 {
     // Profile that the player is using
     [SyncVar] public int ProfileIndex;
-	public SyncListInt SelectedAttributes;
+    public SyncListInt SelectedAttributes;
     [SyncVar] public string username;
 
     private List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
     private int doorResetTime = 10;
 
 
-	// The number of times a player has cheated
-	public int Cheated;
-	public int Team;  
-	public SyncListInt Route;
+    // The number of times a player has cheated
+    public int Cheated;
+    public int Team;
+    public SyncListInt Route;
 
     [SerializeField]
-	private Behaviour[] ComponentsToDisable;
+    private Behaviour[] ComponentsToDisable;
     private Camera SceneCamera;
 
-	public GameObject KeysHUD;
-	[SerializeField]
-	private GameObject ScoreBoard;
-	public GameObject ScoreBoardInstance;
-	[SerializeField]
-	private GameObject RouteUI;
-	public GameObject RouteUIInstance;
+    public GameObject KeysHUD;
+    [SerializeField]
+    private GameObject ScoreBoard;
+    public GameObject ScoreBoardInstance;
+    [SerializeField]
+    private GameObject RouteUI;
+    public GameObject RouteUIInstance;
 
-	private ServerLogic ServerLogic;
-    
-	void Awake()
+    private ServerLogic ServerLogic;
+
+    void Awake()
     {
-		SelectedAttributes = new SyncListInt();
-		Route = new SyncListInt ();
-		Cheated = 0;
-	}
+        SelectedAttributes = new SyncListInt();
+        Route = new SyncListInt();
+        Cheated = 0;
+    }
 
-	public override void OnStartClient() {
-		Route.Callback = OnRouteChanged;
-		SelectedAttributes.Callback = OnSelectedAttributedChanged;
-	}
+    public override void OnStartClient() {
+        Route.Callback = OnRouteChanged;
+        SelectedAttributes.Callback = OnSelectedAttributedChanged;
+    }
 
     void Start()
     {
-        ServerLogic = GameObject.Find ("Game").GetComponent<ServerLogic> ();
-		ServerLogic.RegisterPlayer(this);
-		ScoreBoardInstance = Instantiate(ScoreBoard);
+        ServerLogic = GameObject.Find("Game").GetComponent<ServerLogic>();
+        ServerLogic.RegisterPlayer(this);
+        ScoreBoardInstance = Instantiate(ScoreBoard);
+
+        setPlayerTag();
 
         if (!isLocalPlayer)
         {
-            foreach (Behaviour comp in ComponentsToDisable){
+            foreach (Behaviour comp in ComponentsToDisable) {
                 comp.enabled = false;
             }
-            RpcSetPlayerTag();
+
             ScoreBoardInstance.SetActive(false);
         }
         else
@@ -71,47 +73,46 @@ public class PlayerState : NetworkBehaviour
         }
     }
 
-	public void OnRouteChanged(SyncListInt.Operation op, int index) {
-		UpdateRouteUI ();
-	}
+    public void OnRouteChanged(SyncListInt.Operation op, int index) {
+        UpdateRouteUI();
+    }
 
-	public void OnSelectedAttributedChanged(SyncListInt.Operation op, int index) {
-		UpdateOwnDataUI ();
-	}
+    public void OnSelectedAttributedChanged(SyncListInt.Operation op, int index) {
+        UpdateOwnDataUI();
+    }
 
-	public void UpdateRouteUI() {
-		ScoreBoardInstance.transform.Find ("RouteText").GetComponent<Text> ().text = "Route: " + string.Join (", ", Route.Select (r => r.ToString ()).ToArray ());
-	}
+    public void UpdateRouteUI() {
+        ScoreBoardInstance.transform.Find("RouteText").GetComponent<Text>().text = "Route: " + string.Join(", ", Route.Select(r => r.ToString()).ToArray());
+    }
 
-	public void UpdateOwnDataUI() {
-		string[] OwnData = SelectedAttributes.Select (a => ServerLogic.Profiles [ProfileIndex] [a]).ToArray ();
-		ScoreBoardInstance.transform.Find("OwnDataText").GetComponent<Text>().text = string.Join("\n", OwnData);
-	}
+    public void UpdateOwnDataUI() {
+        string[] OwnData = SelectedAttributes.Select(a => ServerLogic.Profiles[ProfileIndex][a]).ToArray();
+        ScoreBoardInstance.transform.Find("OwnDataText").GetComponent<Text>().text = string.Join("\n", OwnData);
+    }
 
-	public void UpdateCollectedDataUI() {
-		ScoreBoardInstance.transform.Find("CollectedDataText").GetComponent<Text>().text = string.Join("\n",collectedData.Select(d => d.Value).ToArray());
-	}
+    public void UpdateCollectedDataUI() {
+        ScoreBoardInstance.transform.Find("CollectedDataText").GetComponent<Text>().text = string.Join("\n", collectedData.Select(d => d.Value).ToArray());
+    }
 
-	public void AddCollectedData(KeyValuePair<ProfileAttribute, string> data) {
-		collectedData.Add (data);
-		UpdateCollectedDataUI ();
-	}
+    public void AddCollectedData(KeyValuePair<ProfileAttribute, string> data) {
+        collectedData.Add(data);
+        UpdateCollectedDataUI();
+    }
 
-	public void RemoveCollectedData(KeyValuePair<ProfileAttribute, string> data) {
-		collectedData.Remove (data);
-		UpdateCollectedDataUI ();
-	}
+    public void RemoveCollectedData(KeyValuePair<ProfileAttribute, string> data) {
+        collectedData.Remove(data);
+        UpdateCollectedDataUI();
+    }
 
-	public List<KeyValuePair<ProfileAttribute, string>>.Enumerator GetCollectedDataEnumerator() {
-		return collectedData.GetEnumerator ();
-	}
+    public List<KeyValuePair<ProfileAttribute, string>>.Enumerator GetCollectedDataEnumerator() {
+        return collectedData.GetEnumerator();
+    }
 
-    public void RpcSetPlayerTag()
+    public void setPlayerTag()
     {
-        this.gameObject.AddComponent<Tag3D>();
-        this.gameObject.GetComponent<Tag3D>().tagText = "BANAAN";
-        Debug.Log(username);
-        Debug.Log(this.gameObject.GetComponent<Tag3D>().tagText);
+        gameObject.AddComponent<Tag3D>();
+        gameObject.GetComponent<Tag3D>().tagText = username;
+        gameObject.GetComponent<Tag3D>().color = Color.white;
     }
 
 	void Update(){

@@ -79,9 +79,6 @@ public class ServerLogic : NetworkBehaviour
 					
 			// Assign each player a team
 			Players[i].Team = i % 2;
-
-            // Set the player Tags.
-            Players[i].GetComponent<PlayerState>().RpcSetPlayerTag();
         }
 
 		// Start the game
