@@ -61,9 +61,6 @@ public class ServerLogic : NetworkBehaviour
         {
 			Players[i].ProfileIndex = i;
 
-			// Add a unique route to each player
-			Enumerable.Range(0,4).OrderBy(r => UnityEngine.Random.value).ToList().ForEach(r => Players[i].Route.Add(r));
-
 			for(int j = 0; j < AttributesPerPlayer; j++)
             {
 				if(AttributesNotYetInGame.Any ()) {
