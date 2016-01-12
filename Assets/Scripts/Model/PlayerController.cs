@@ -113,6 +113,8 @@ public class PlayerController : NetworkBehaviour
 
 			c.gameObject.SetActive(false);
 			state.RemoveFirstRouteItem();
+			String extra = state.Route.Count > 0 ? " Only "+state.Route.Count+" to go! Next up: Trophy "+state.Route[0] : " You have scored one point for your team!";
+			GameObject.Find("Notification").GetComponent<Notification>().Notify("Picked up Trophy "+c.gameObject.GetComponent<Trophy> ().Number+"!"+extra);
 
 			if(state.Route.Count == 0) {
 				CmdAddPointTo(state.Team);
