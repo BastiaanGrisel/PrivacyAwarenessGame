@@ -101,7 +101,7 @@ public class PlayerController : NetworkBehaviour
 		Debug.Log (points + " " + serverLogic.Players.Count (p => p.Team == Team));
 
 		if (serverLogic.Players.Count (p => p.Team == Team) == points) {
-			state.CmdBroadcastNotification ("Game Over! Team " + Team + " wins!");
+			state.CmdBroadcastNotification ("Game Over! Team " + Team + " wins!", float.PositiveInfinity);
 			CmdEndGame ();
 		}
 	}
@@ -122,7 +122,7 @@ public class PlayerController : NetworkBehaviour
 			c.gameObject.SetActive(false);
 			state.RemoveFirstRouteItem();
 			String extra = state.Route.Count > 0 ? " Only "+state.Route.Count+" to go! Next up: Trophy "+state.Route[0] : " You have scored one point for your team!";
-			GameObject.Find("Notification").GetComponent<Notification>().Notify("Picked up Trophy "+c.gameObject.GetComponent<Trophy> ().Number+"!"+extra);
+			GameObject.Find("Notification").GetComponent<Notification>().Notify("Picked up Trophy "+c.gameObject.GetComponent<Trophy> ().Number+"!"+extra, 2000);
 
 			serverLogic.revealTeamMember(state.Team);
 

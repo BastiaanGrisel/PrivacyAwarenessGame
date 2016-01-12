@@ -1,46 +1,53 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 
 public class Notification : MonoBehaviour
 {
-    private float alpha = 1f;
-    private float speed = 0.5f;
+	private float StartTime;
+	private float FadeSpeed = 2f;
+    private float Alpha = 1f;
 
-    private List<string> notifications = new List<string>();
-    private string current = "";
+	private SortedDictionary<string,float> Notifications = new SortedDictionary<string,float>();
+	private KeyValuePair<string,float>? CurrentNotification = null;
 
-    public void Notify(string message)
+    public void Notify(string Message, float Duration = 1000)
     {
-        notifications.Add(message);
+        Notifications.Add(Message,Duration);
     }
 
     void Update()
     {
-        if (!Mathf.Approximately(alpha, 0))
-            alpha = Mathf.MoveTowards(alpha, 0.0f, speed * Time.deltaTime);
-        else if (notifications.Count != 0)
-        {
-            current = notifications[0];
-            notifications.RemoveAt(0);
-            alpha = 1.0f;
-        }
-        else
-            current = " ";
-    }
+		// Show a notification if there is one
+		if (!CurrentNotification.HasValue && Notifications.Any ()) {
+			CurrentNotification = Notifications.First ();
+			StartTime = Time.time * 1000;
+			Alpha = 1f;
+			Notifications.Remove(CurrentNotification.Value.Key);
+		} else if(Mathf.Approximately(Alpha,0)) {
+			// Remove the notification if it has become invisible
+			CurrentNotification = null;
+		} else if(CurrentNotification.HasValue && Time.time * 1000 - StartTime > CurrentNotification.Value.Value) {
+			// If the duration of a notification is over, fade out the notification
+			Alpha = Mathf.MoveTowards(Alpha, 0.0f, FadeSpeed * Time.deltaTime);
+		} 
+	}
   
     void OnGUI()
     {
+		if (!CurrentNotification.HasValue)
+			return;
+
         GUIStyle style = new GUIStyle();
         style.fontSize = 28;
         style.alignment = TextAnchor.UpperCenter;
+		Color c = Color.white;
+		c.a = Alpha;
+		style.normal.textColor = c;
 
         int width = 200;
         int height = 100;
-        Color oldColor = GUI.color;
-        Color newColor = GUI.color;
-        newColor.a = alpha;
-        GUI.color = newColor;
-        GUI.Label(new Rect(Screen.width / 2 - width/2, Screen.height / 4 - height/2, width, height), current, style);
-        GUI.color = oldColor;
+		GUI.Label(new Rect(Screen.width / 2 - width/2, Screen.height / 4 - height/2, width, height), CurrentNotification.Value.Key, style);
     }
 }

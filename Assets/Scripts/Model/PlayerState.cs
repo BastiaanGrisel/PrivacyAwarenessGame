@@ -230,15 +230,15 @@ public class PlayerState : NetworkBehaviour
     {
         communicationWithId = id;
     }
-    public void CmdBroadcastNotification(string message)
+    public void CmdBroadcastNotification(string message, float Duration = 1000)
     {
-        RpcBroadcastNotification(message);
+        RpcBroadcastNotification(message, Duration);
     }
 
     [ClientRpc]
-    public void RpcBroadcastNotification(string message)
+    public void RpcBroadcastNotification(string message, float Duration)
     {
         GameObject notification = GameObject.Find("Notification");
-        notification.GetComponent<Notification>().Notify(message);
+        notification.GetComponent<Notification>().Notify(message, Duration);
     }
 }
