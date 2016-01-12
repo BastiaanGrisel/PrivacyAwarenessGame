@@ -12,7 +12,7 @@ public class ServerLogic : NetworkBehaviour
 
     // Game properties
     public List<Profile> Profiles = new List<Profile>();
-	private List<PlayerState> Players;
+	public List<PlayerState> Players { get; private set; }
 	public GameObject ScoreBoardInstance;
 
     public void Awake()
@@ -76,7 +76,7 @@ public class ServerLogic : NetworkBehaviour
 			}
 					
 			// Assign each player a team
-			Players[i].Team = 1;//i % 2;
+			Players[i].Team = i % 2;
         }
 
 		// Start the game

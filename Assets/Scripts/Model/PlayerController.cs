@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using System;
+using System.Linq;
 
 [RequireComponent(typeof(PlayerMotor))]
 [RequireComponent(typeof(PlayerState))]
@@ -96,6 +97,13 @@ public class PlayerController : NetworkBehaviour
 	[Command]
 	public void CmdAddPointTo(int Team) {
 		RpcAddPointTo (Team);
+		int points = serverLogic.ScoreBoardInstance.GetComponentInChildren<Score> ().getPoints (Team) + 1;
+		Debug.Log (points + " " + serverLogic.Players.Count (p => p.Team == Team));
+
+		if (serverLogic.Players.Count (p => p.Team == Team) == points) {
+			state.CmdBroadcastNotification ("Game Over! Team " + Team + " wins!");
+			CmdEndGame ();
+		}
 	}
 
 	[ClientRpc]
