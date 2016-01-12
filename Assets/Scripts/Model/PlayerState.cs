@@ -11,6 +11,10 @@ public class PlayerState : NetworkBehaviour
     [SyncVar] public int ProfileIndex;
 	public SyncListInt SelectedAttributes = new SyncListInt();
     [SyncVar] public string username;
+    [SyncVar] public bool isQuestioning;
+    [SyncVar] public bool isAnswering;
+    [SyncVar] public bool isWaitingforQuestion;
+    [SyncVar] public uint communicationWithId;
 
     public bool freeze = false;
 
@@ -38,6 +42,10 @@ public class PlayerState : NetworkBehaviour
     void Awake()
     {
 		Cheated = 0;
+        isQuestioning = false;
+        isAnswering = false;
+        isWaitingforQuestion = false;
+        communicationWithId = NetworkInstanceId.Invalid.Value;
 		Enumerable.Range(0,4).OrderBy(r => UnityEngine.Random.value).ToList().ForEach(r => Route.Add(r));
 	}
 
@@ -190,6 +198,28 @@ public class PlayerState : NetworkBehaviour
     }
 
     [Command]
+    public void CmdIsQuestioning(bool b)
+    {
+        isQuestioning = b;
+    }
+
+    [Command]
+    public void CmdIsAnswering(bool b)
+    {
+        isAnswering = b;
+    }
+
+    [Command]
+    public void CmdIsWaitingforQuestion(bool b)
+    {
+        isWaitingforQuestion = b;
+    }
+
+    [Command]
+    public void CmdCommunicationWithId(uint id)
+    {
+        communicationWithId = id;
+    }
     public void CmdBroadcastNotification(string message)
     {
         RpcBroadcastNotification(message);
