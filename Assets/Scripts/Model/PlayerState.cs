@@ -195,6 +195,8 @@ public class PlayerState : NetworkBehaviour
 
 	public void Reveal() {
 		gameObject.transform.Find ("Graphics").Find ("PlayerModel").GetComponent<Renderer> ().material.color = Color.green;
+		gameObject.GetComponent<Tag3D>().color = Color.green;
+
 		this.Revealed = true;
 	}
 
