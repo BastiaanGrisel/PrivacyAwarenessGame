@@ -76,7 +76,7 @@ public class ServerLogic : NetworkBehaviour
 			}
 					
 			// Assign each player a team
-			Players[i].Team = i % 2;
+			Players[i].Team = 1;//i % 2;
         }
 
 		// Start the game
@@ -84,4 +84,10 @@ public class ServerLogic : NetworkBehaviour
 
         Players[0].CmdBroadcastNotification("Game started!");
     }
+
+	public void revealTeamMember (int Team)
+	{
+		if (Players.Exists (p => p.Team == Team && !p.Revealed))
+			Players.First (p => p.Team == Team && !p.Revealed).Reveal();
+	}
 }

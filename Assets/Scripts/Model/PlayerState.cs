@@ -16,6 +16,7 @@ public class PlayerState : NetworkBehaviour
     [SyncVar] public bool isWaitingforQuestion;
     [SyncVar] public uint communicationWithId;
 
+	public bool Revealed = false; // Set to true when the local player knows which team this player is in
     public bool freeze = false;
 
     private List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
@@ -72,6 +73,8 @@ public class PlayerState : NetworkBehaviour
         }
         else
         {
+			this.Revealed = true; // Make sure the player does not 'reveal' itself as a team member
+
             SceneCamera = Camera.main;
             if (SceneCamera != null)
             {
@@ -188,6 +191,11 @@ public class PlayerState : NetworkBehaviour
 
 		GameObject lock3 = NetworkServer.FindLocalObject(door.GetComponent<UnlockableDoor>().Locks[2].GetComponent<LockCube>().netId);
         lock3.GetComponent<LockCube> ().RpcSetActive (true);
+	}
+
+	public void Reveal() {
+		gameObject.transform.Find ("Graphics").Find ("PlayerModel").GetComponent<Renderer> ().material.color = Color.green;
+		this.Revealed = true;
 	}
 
     [Command]
