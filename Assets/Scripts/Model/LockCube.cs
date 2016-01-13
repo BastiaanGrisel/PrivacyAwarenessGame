@@ -27,7 +27,7 @@ public class LockCube : NetworkBehaviour {
             var iter = other.gameObject.GetComponent<PlayerState>().GetCollectedDataEnumerator();
             while (iter.MoveNext())
             {
-                if (iter.Current.Key == this.Key && !iter.Current.Value.EndsWith(" "))
+				if (iter.Current.Key == this.Key && !iter.Current.Value.EndsWith(" "))
                 {
                     other.gameObject.GetComponent<PlayerState>().CmdIncrementCounter(Door.GetComponent<UnlockableDoor>().netId);
                     other.gameObject.GetComponent<PlayerState>().CmdDestroyLockCube(netId);

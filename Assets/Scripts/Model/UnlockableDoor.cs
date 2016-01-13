@@ -12,7 +12,7 @@ public class UnlockableDoor : NetworkBehaviour {
 	void Awake() {
 		Counter = 0;
 	}
-
+	
 	[Server]
 	void InitializeDoor() {
 		List<ProfileAttribute> RandomAttributes = new List<ProfileAttribute> ();

@@ -10,7 +10,8 @@ public class BacksideDoor : MonoBehaviour {
 	}
 
 	void OnTriggerExit(Collider other) {
-		Door.GetComponent<BoxCollider> ().enabled = true;
+		if(Door.GetComponent<MeshRenderer> ().enabled)
+			Door.GetComponent<BoxCollider> ().enabled = true;
 	}
 
 }
