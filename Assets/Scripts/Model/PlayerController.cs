@@ -162,18 +162,21 @@ public class PlayerController : NetworkBehaviour
 
             foreach (ProfileAttribute attr in Enum.GetValues(typeof(ProfileAttribute)))
             {
-                GameObject newButton = Instantiate(ButtonPrefab) as GameObject;
-                newButton.transform.Find("Text").GetComponent<Text>().text = ProfileAttributeExt.ToFriendlyString(attr);
-                newButton.transform.SetParent(QuestionsPanel);
-                Button button = newButton.GetComponent<Button>();
-                ProfileAttribute attrClone = attr;
-                button.onClick.AddListener(() =>
+                if (otherPlayerState.SelectedAttributes.Contains((int)attr))
                 {
-                    gameObject.GetComponent<PlayerState>().freeze = false;
-                    CmdAskQuestion(attrClone, this.gameObject, c.gameObject);
-                    DataExchangeCanvas.SetActive(false);
-                    state.CmdIsQuestioning(false);
-                });
+                    GameObject newButton = Instantiate(ButtonPrefab) as GameObject;
+                    newButton.transform.Find("Text").GetComponent<Text>().text = ProfileAttributeExt.ToFriendlyString(attr);
+                    newButton.transform.SetParent(QuestionsPanel);
+                    Button button = newButton.GetComponent<Button>();
+                    ProfileAttribute attrClone = attr;
+                    button.onClick.AddListener(() =>
+                    {
+                        gameObject.GetComponent<PlayerState>().freeze = false;
+                        CmdAskQuestion(attrClone, this.gameObject, c.gameObject);
+                        DataExchangeCanvas.SetActive(false);
+                        state.CmdIsQuestioning(false);
+                    });
+                }
             }
 
             DataExchangeCanvas.SetActive(true);
