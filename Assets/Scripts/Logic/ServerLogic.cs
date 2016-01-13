@@ -88,6 +88,9 @@ public class ServerLogic : NetworkBehaviour
 	public void revealTeamMember (int Team)
 	{
 		if (Players.Exists (p => p.Team == Team && !p.Revealed))
-			Players.First (p => p.Team == Team && !p.Revealed).Reveal();
+			Players.First (p => p.Team == Team && !p.Revealed).Reveal(Team);
+
+		if (Players.Exists (p => p.Team != Team && !p.Revealed))
+			Players.First (p => p.Team != Team && !p.Revealed).Reveal(Team);
 	}
 }

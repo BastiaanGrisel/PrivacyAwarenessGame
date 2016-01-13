@@ -193,9 +193,10 @@ public class PlayerState : NetworkBehaviour
         lock3.GetComponent<LockCube> ().RpcSetActive (true);
 	}
 
-	public void Reveal() {
-		gameObject.transform.Find ("Graphics").Find ("PlayerModel").GetComponent<Renderer> ().material.color = Color.green;
-		gameObject.GetComponent<Tag3D>().color = Color.green;
+	public void Reveal(int Team) {
+		Color c = this.Team == Team ? Color.green : Color.red;
+		gameObject.transform.Find ("Graphics").Find ("PlayerModel").GetComponent<Renderer> ().material.color = c;
+		gameObject.GetComponent<Tag3D>().color = c;
 
 		this.Revealed = true;
 	}
