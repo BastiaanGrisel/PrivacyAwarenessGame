@@ -23,7 +23,6 @@ public class LauncherGUI : MonoBehaviour
         hostGame.onClick.AddListener(() =>
         {
             manager.StartHost();
-
         });
 
         joinGame.onClick.AddListener(() =>
