@@ -11,8 +11,14 @@ public class PlayerState : NetworkBehaviour
     [SyncVar] public int ProfileIndex;
 	public SyncListInt SelectedAttributes = new SyncListInt();
     [SyncVar] public string username;
+
+    // Jij bent een vraag aan het stellen, en je hebt nog niet geklikt op wat je wilt vragen.
     [SyncVar] public bool isQuestioning;
+
+    // Jij moet nog antwoord geven op een vraag die aan jou gesteld is.
     [SyncVar] public bool isAnswering;
+
+    // Jij bent nog aan het wachten op een vraag van iemand anders.
     [SyncVar] public bool isWaitingforQuestion;
     [SyncVar] public uint communicationWithId;
 

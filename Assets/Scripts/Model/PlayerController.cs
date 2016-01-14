@@ -134,15 +134,25 @@ public class PlayerController : NetworkBehaviour
         if (c.gameObject.tag == "Player")
         {
             PlayerState otherPlayerState = c.gameObject.GetComponent<PlayerState>();
-            if(state.isQuestioning || state.isAnswering || state.isWaitingforQuestion)
+            if (state.isQuestioning || state.isAnswering)
             {
-                GameObject.Find("Notification").GetComponent<Notification>().Notify("Je bent al met iemand aan het communiceren");
+                GameObject.Find("Notification").GetComponent<Notification>().Notify("You first need to answer the question being asked!");
                 return;
             }
-            if (otherPlayerState.isAnswering || ((otherPlayerState.isQuestioning || otherPlayerState.isWaitingforQuestion) && !this.netId.Value.Equals(otherPlayerState.communicationWithId)))
+            else if (state.isWaitingforQuestion && this.netId.Value.Equals(otherPlayerState.communicationWithId))
             {
-                GameObject.Find("Notification").GetComponent<Notification>().Notify(otherPlayerState.username + " is al met iemand aan het communiceren");
+                GameObject.Find("Notification").GetComponent<Notification>().Notify("You're waiting for " + otherPlayerState.username + " to ask you a question!");
                 return;
+            }
+            else if (state.isWaitingforQuestion)
+            {
+                GameObject.Find("Notification").GetComponent<Notification>().Notify("You're waiting for someone else to ask you a question!");
+                return;
+            }
+            else if((otherPlayerState.isAnswering || otherPlayerState.isQuestioning || otherPlayerState.isWaitingforQuestion) && !this.netId.Value.Equals(otherPlayerState.communicationWithId))
+            {
+                    GameObject.Find("Notification").GetComponent<Notification>().Notify(otherPlayerState.username + " is al met iemand aan het communiceren");
+                    return;
             }
             state.CmdIsQuestioning(true);
             state.CmdIsWaitingforQuestion(true);
