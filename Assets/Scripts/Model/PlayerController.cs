@@ -27,6 +27,8 @@ public class PlayerController : NetworkBehaviour
     private GameObject AnswerCanvasPrefab;
     private GameObject AnswerCanvas;
 
+    private System.Random rnd = new System.Random();
+
     void Awake()
     {
 		motor = GetComponent<PlayerMotor>();
@@ -249,12 +251,13 @@ public class PlayerController : NetworkBehaviour
             Button lButton = lieButton.GetComponent<Button>();
             lButton.onClick.AddListener(() =>
             {
-                System.Random rnd = new System.Random();
                 GameObject logic = GameObject.Find("Game");
 
-                Profile prof = logic.GetComponent<ServerLogic>().Profiles[rnd.Next() % logic.GetComponent<ServerLogic>().Profiles.Count];
-
-                CmdAnswerQuestion(attr, prof[(int)attr] + " ", requester, questioned);
+                string data = logic.GetComponent<ServerLogic>().Profiles[rnd.Next() % logic.GetComponent<ServerLogic>().Profiles.Count - 1][(int)attr];
+                if(data == requesterPlayerState.GetProfile()[(int)attr])
+                    data = logic.GetComponent<ServerLogic>().Profiles[logic.GetComponent<ServerLogic>().Profiles.Count - 1][(int)attr];
+                
+                CmdAnswerQuestion(attr, data + " ", requester, questioned);
                 AnswerCanvas.SetActive(false);
                 state.CmdIsAnswering(false);
                 if (!state.isQuestioning)
