@@ -87,10 +87,19 @@ public class ServerLogic : NetworkBehaviour
 
 	public void revealTeamMember (int Team)
 	{
-		if (Players.Exists (p => p.Team == Team && !p.Revealed))
-			Players.First (p => p.Team == Team && !p.Revealed).Reveal(Team);
+        GameObject notification = GameObject.Find("Notification");
+        if (Players.Exists(p => p.Team == Team && !p.Revealed))
+        {
+            PlayerState player = Players.First(p => p.Team == Team && !p.Revealed);
+            player.Reveal(Team);
+            notification.GetComponent<Notification>().Notify(player.username + " belongs to your team!", 1000);
+        }
 
-		if (Players.Exists (p => p.Team != Team && !p.Revealed))
-			Players.First (p => p.Team != Team && !p.Revealed).Reveal(Team);
+        if (Players.Exists(p => p.Team != Team && !p.Revealed))
+        {
+            PlayerState player = Players.First(p => p.Team != Team && !p.Revealed);
+            player.Reveal(Team);
+            notification.GetComponent<Notification>().Notify(player.username + " belongs to the enemy team!", 1000);
+        }
 	}
 }
