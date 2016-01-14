@@ -22,7 +22,7 @@ public class NetworkManager : UnityEngine.Networking.NetworkManager
     public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId, NetworkReader extraMessageReader)
     {
         string username = extraMessageReader.ReadMessage<UsernameMsg>().username;
-        if (Network.connections.Length <= MaxConnections)
+        if (Network.connections.Length <= MaxConnections && !GameObject.Find("Game").GetComponent<ServerLogic>().GameStarted)
         {
             // Instantiate a Player
             GameObject player = (GameObject)GameObject.Instantiate(playerPrefab, GetStartPosition().position, Quaternion.identity);
