@@ -233,7 +233,8 @@ public class PlayerController : NetworkBehaviour
             Profile profile = serverLogic.Profiles[questioned.GetComponent<PlayerState>().ProfileIndex];
             string answerTruth = profile[(int)attr];
             GameObject truthButton = Instantiate(ButtonPrefab) as GameObject;
-            truthButton.transform.Find("Text").GetComponent<Text>().text = "Waarheid (" + ProfileAttributeExt.ToFriendlyString(attr) + "=" + answerTruth;
+            //Debug.Log(questioned.GetComponent<PlayerState>().ProfileIndex + "|" + questioned.GetComponent<PlayerState>().username + "|" + "Waarheid (" + ProfileAttributeExt.ToFriendlyString(attr) + "=" + answerTruth + ")");
+            truthButton.transform.Find("Text").GetComponent<Text>().text = "Waarheid (" + ProfileAttributeExt.ToFriendlyString(attr) + "=" + answerTruth + ")";
             truthButton.transform.SetParent(AnswerPanel);
             Button tButton = truthButton.GetComponent<Button>();
             tButton.onClick.AddListener(() =>
