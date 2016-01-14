@@ -7,7 +7,6 @@ public class LauncherGUI : MonoBehaviour
     // UI Elements
     private Button hostGame;
     private Button joinGame;
-    private Button settings;
     private Button exit;
 
     // Networking Attributes
@@ -19,7 +18,6 @@ public class LauncherGUI : MonoBehaviour
         manager = GameObject.Find("Network Manager").GetComponent<NetworkManager>();
         hostGame = GameObject.Find("Host Game").GetComponent<Button>();
         joinGame = GameObject.Find("Join Game").GetComponent<Button>();
-        settings = GameObject.Find("Settings").GetComponent<Button>();
         exit = GameObject.Find("Exit").GetComponent<Button>();
 
         hostGame.onClick.AddListener(() =>
@@ -34,20 +32,9 @@ public class LauncherGUI : MonoBehaviour
             manager.StartClient();
         });
 
-        settings.onClick.AddListener(() =>
-        {
-            Debug.Log("Settings pressed!");
-            gameObject.SetActive(false);
-        });
-
         exit.onClick.AddListener(() =>
         {
             Application.Quit();
         });
-    }
-
-    void OnPlayerConnected(NetworkPlayer player)
-    {
-
     }
 }
