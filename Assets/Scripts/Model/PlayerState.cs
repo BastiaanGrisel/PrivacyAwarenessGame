@@ -26,7 +26,7 @@ public class PlayerState : NetworkBehaviour
     public bool freeze = false;
 
     private List<KeyValuePair<ProfileAttribute, string>> collectedData = new List<KeyValuePair<ProfileAttribute, string>>();
-    private int doorResetTime = 10;
+    private int doorResetTime = 30;
 
 	// The number of times a player has cheated
 	public int Cheated;
