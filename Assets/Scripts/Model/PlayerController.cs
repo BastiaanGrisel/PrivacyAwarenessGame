@@ -151,7 +151,7 @@ public class PlayerController : NetworkBehaviour
             }
             else if((otherPlayerState.isAnswering || otherPlayerState.isQuestioning || otherPlayerState.isWaitingforQuestion) && !this.netId.Value.Equals(otherPlayerState.communicationWithId))
             {
-                    GameObject.Find("Notification").GetComponent<Notification>().Notify(otherPlayerState.username + " is al met iemand aan het communiceren");
+                    GameObject.Find("Notification").GetComponent<Notification>().Notify(otherPlayerState.username + " is already communicating with someone.");
                     return;
             }
             state.CmdIsQuestioning(true);
@@ -287,7 +287,7 @@ public class PlayerController : NetworkBehaviour
         if (this.gameObject.Equals(requester) && isLocalPlayer)
         {
             state.AddCollectedData(new KeyValuePair<ProfileAttribute, string>(attr, answer));
-            GameObject.Find("Notification").GetComponent<Notification>().Notify(questioned.GetComponent<PlayerState>().username + " heeft je vraag over " + ProfileAttributeExt.ToFriendlyString(attr) + " beantwoord");
+            GameObject.Find("Notification").GetComponent<Notification>().Notify(questioned.GetComponent<PlayerState>().username + " has answerred your question about " + ProfileAttributeExt.ToFriendlyString(attr));
         }
     }
 }
