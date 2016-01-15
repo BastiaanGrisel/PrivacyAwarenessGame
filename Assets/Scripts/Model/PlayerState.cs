@@ -8,7 +8,7 @@ using System.Linq;
 public class PlayerState : NetworkBehaviour
 {
     // Profile that the player is using
-    [SyncVar] public int ProfileIndex;
+    [SyncVar(hook="OnChangeProfileIndex")] public int ProfileIndex;
 	public SyncListInt SelectedAttributes = new SyncListInt();
     [SyncVar] public string username;
 
@@ -205,6 +205,11 @@ public class PlayerState : NetworkBehaviour
 		gameObject.GetComponent<Tag3D>().color = c;
 
 		this.Revealed = true;
+	}
+
+	public void OnChangeProfileIndex(int NewProfileIndex) {
+		ProfileIndex = NewProfileIndex;
+		UpdateOwnDataUI ();
 	}
 
     [Command]

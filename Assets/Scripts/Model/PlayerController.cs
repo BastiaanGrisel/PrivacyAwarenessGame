@@ -151,7 +151,7 @@ public class PlayerController : NetworkBehaviour
                 GameObject.Find("Notification").GetComponent<Notification>().Notify("You're waiting for someone else to ask you a question!");
                 return;
             }
-            else if((otherPlayerState.isAnswering || otherPlayerState.isQuestioning || otherPlayerState.isWaitingforQuestion) && !this.netId.Value.Equals(otherPlayerState.communicationWithId))
+            else if (otherPlayerState.isAnswering || ((otherPlayerState.isQuestioning || otherPlayerState.isWaitingforQuestion) && !this.netId.Value.Equals(otherPlayerState.communicationWithId)))
             {
                     GameObject.Find("Notification").GetComponent<Notification>().Notify(otherPlayerState.username + " is already communicating with someone.");
                     return;
