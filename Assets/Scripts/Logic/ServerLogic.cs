@@ -54,8 +54,11 @@ public class ServerLogic : NetworkBehaviour
 		// Calculate the amount of attributes each player needs to get to ensure allt he attributes are in the game
 		int AttributesPerPlayer = 3;//(int) Math.Max (3, Math.Ceiling ((double) Profile.TotalNumberOfAttributes() / (double) Players.Count));
 
+		// Set the number of attributes in the game
+		Profile.NumberOfAttributes = (int) Math.Floor (Players.Count / 2.0) * 3;
+
 		// Generate a list of all the attributes in random order
-		List<ProfileAttribute> AllAttributes = Enum.GetValues(typeof(ProfileAttribute)).Cast<ProfileAttribute>().OrderBy(a => UnityEngine.Random.value).ToList ();
+		List<ProfileAttribute> AllAttributes = Enum.GetValues(typeof(ProfileAttribute)).Cast<ProfileAttribute>()/*.OrderBy(a => UnityEngine.Random.value)*/.Take(Profile.NumberOfAttributes).ToList ();
 		List<ProfileAttribute> AttributesNotYetInGame = new List<ProfileAttribute> (AllAttributes);
 
 		for (int i = 0; i < Players.Count; i++)
@@ -78,6 +81,11 @@ public class ServerLogic : NetworkBehaviour
 			// Assign each player a team
 			Players[i].Team = i % 2;
         }
+
+		// Initialize doors
+		foreach(GameObject d in GameObject.FindGameObjectsWithTag ("Door")) {
+			d.GetComponent<UnlockableDoor>().InitializeDoor();
+		}
 
 		// Start the game
 		GameStarted = true;

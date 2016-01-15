@@ -29,7 +29,5 @@ public static class ProfileAttributeExt
 
 public class Profile : List<string>
 {	
-	public static int TotalNumberOfAttributes() {
-		return Enum.GetNames (typeof(ProfileAttribute)).Length;
-	}
+	public static int NumberOfAttributes = Enum.GetNames (typeof(ProfileAttribute)).Length;
 }

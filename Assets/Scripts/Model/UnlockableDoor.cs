@@ -14,13 +14,13 @@ public class UnlockableDoor : NetworkBehaviour {
 	}
 	
 	[Server]
-	void InitializeDoor() {
+	public void InitializeDoor() {
 		List<ProfileAttribute> RandomAttributes = new List<ProfileAttribute> ();
 		ProfileAttribute attr;
-		
+
 		foreach(GameObject l in Locks) {
 			do {
-				attr = (ProfileAttribute)UnityEngine.Random.Range (0, Profile.TotalNumberOfAttributes ());
+				attr = (ProfileAttribute)UnityEngine.Random.Range (0, Profile.NumberOfAttributes);
 			} while (RandomAttributes.Contains(attr));
 
 			RandomAttributes.Add (attr);
@@ -29,9 +29,9 @@ public class UnlockableDoor : NetworkBehaviour {
 	}
 
 	void Update() {
-		if (Input.GetKeyDown (KeyCode.Return) && isServer) {
-			InitializeDoor();
-		}
+//		if (Input.GetKeyDown (KeyCode.Return) && isServer) {
+//			InitializeDoor();
+//		}
 	}
 	
 	[ClientRpc]
