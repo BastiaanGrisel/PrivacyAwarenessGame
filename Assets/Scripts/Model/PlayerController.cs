@@ -169,6 +169,7 @@ public class PlayerController : NetworkBehaviour
             PlayerState otherPlayerState = other.GetComponent<PlayerState>();
 
             state.CmdCommunicationWithId(otherPlayerState.netId.Value);
+            state.freeze = true;
 
             Transform panel = DataExchangeCanvas.transform.Find("DataExchangePanel");
             Text dataExchangeGUIText = panel.transform.Find("DataExchangePlayerIDText").GetComponent<Text>();
