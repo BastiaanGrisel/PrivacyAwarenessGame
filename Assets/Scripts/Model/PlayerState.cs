@@ -67,14 +67,13 @@ public class PlayerState : NetworkBehaviour
 
         HUDInstance = Instantiate(HUD);
 
-        setPlayerTag();
-
         if (!isLocalPlayer)
         {
             foreach (Behaviour comp in ComponentsToDisable) {
                 comp.enabled = false;
             }
 
+            setPlayerTag();
             HUDInstance.SetActive(false);
         }
         else
