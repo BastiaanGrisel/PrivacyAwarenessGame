@@ -135,36 +135,44 @@ public class PlayerController : NetworkBehaviour
 
         if (c.gameObject.tag == "Player")
         {
-            PlayerState otherPlayerState = c.gameObject.GetComponent<PlayerState>();
-            if (state.isQuestioning || state.isAnswering)
-            {
-                GameObject.Find("Notification").GetComponent<Notification>().Notify("You first need to answer the question being asked!");
-                return;
-            }
-            else if (state.isWaitingforQuestion && this.netId.Value.Equals(otherPlayerState.communicationWithId))
-            {
-                GameObject.Find("Notification").GetComponent<Notification>().Notify("You're waiting for " + otherPlayerState.username + " to ask you a question!");
-                return;
-            }
-            else if (state.isWaitingforQuestion)
-            {
-                GameObject.Find("Notification").GetComponent<Notification>().Notify("You're waiting for someone else to ask you a question!");
-                return;
-            }
-            else if (otherPlayerState.isAnswering || ((otherPlayerState.isQuestioning || otherPlayerState.isWaitingforQuestion) && !this.netId.Value.Equals(otherPlayerState.communicationWithId)))
-            {
-                    GameObject.Find("Notification").GetComponent<Notification>().Notify(otherPlayerState.username + " is already communicating with someone.");
-                    return;
-            }
-            state.CmdIsQuestioning(true);
-            state.CmdIsWaitingforQuestion(true);
+            CmdStartCommunication(this.gameObject, c.gameObject);
+        }
+    }
+
+    [Command]
+    void CmdStartCommunication(GameObject player1, GameObject player2)
+    {
+        PlayerState player1State = player1.GetComponent<PlayerState>();
+        PlayerState player2State = player2.GetComponent<PlayerState>();
+        if (!player1State.isQuestioning && !player1State.isAnswering && !player1State.isWaitingforQuestion && !player2State.isQuestioning && !player2State.isAnswering && !player2State.isWaitingforQuestion)
+        {
+            player1State.isQuestioning = true;
+            player1State.isWaitingforQuestion = true;
+            player2State.isQuestioning = true;
+            player2State.isWaitingforQuestion = true;
+
+            RpcStartCommunication(player1, player2);
+        }
+    }
+
+    [ClientRpc]
+    void RpcStartCommunication(GameObject player1, GameObject player2)
+    {
+        player1.GetComponent<PlayerController>().StartCommunication(player1, player2);
+        player2.GetComponent<PlayerController>().StartCommunication(player2, player1);
+    }
+
+    void StartCommunication(GameObject local, GameObject other)
+    {
+        if (isLocalPlayer && this.gameObject.Equals(local))
+        {
+            PlayerState otherPlayerState = other.GetComponent<PlayerState>();
+
             state.CmdCommunicationWithId(otherPlayerState.netId.Value);
-            
-            gameObject.GetComponent<PlayerState>().freeze = true;
 
             Transform panel = DataExchangeCanvas.transform.Find("DataExchangePanel");
             Text dataExchangeGUIText = panel.transform.Find("DataExchangePlayerIDText").GetComponent<Text>();
-            dataExchangeGUIText.text = c.gameObject.GetComponent<PlayerState>().username;
+            dataExchangeGUIText.text = otherPlayerState.username;
 
             Transform QuestionsPanel = panel.Find("Panel").Find("ScrollView").Find("QuestionsPanel");
             foreach (Transform trans in QuestionsPanel)
@@ -183,8 +191,8 @@ public class PlayerController : NetworkBehaviour
                     ProfileAttribute attrClone = attr;
                     button.onClick.AddListener(() =>
                     {
-                        gameObject.GetComponent<PlayerState>().freeze = false;
-                        CmdAskQuestion(attrClone, this.gameObject, c.gameObject);
+                        state.freeze = false;
+                        CmdAskQuestion(attrClone, this.gameObject, other);
                         DataExchangeCanvas.SetActive(false);
                         state.CmdIsQuestioning(false);
                     });
@@ -205,7 +213,6 @@ public class PlayerController : NetworkBehaviour
     void CmdAskQuestion(ProfileAttribute attr, GameObject requester, GameObject questioned)
     {
         RpcAskQuestion(attr, requester, questioned);
-        AskQuestion(attr, requester, questioned);
     }
 
     [ClientRpc]
@@ -277,7 +284,6 @@ public class PlayerController : NetworkBehaviour
     void CmdAnswerQuestion(ProfileAttribute attr, string answer, GameObject requester, GameObject questioned)
     {
         RpcAnswerQuestion(attr, answer, requester, questioned);
-        AnswerQuestion(attr, answer, requester, questioned);
     }
 
     [ClientRpc]
