@@ -30,7 +30,7 @@ public class PlayerState : NetworkBehaviour
 
 	// The number of times a player has cheated
 	public int Cheated;
-	[SyncVar] public int Team;  
+	[SyncVar(hook="ShowTeam")] public int Team;  
 	public List<int> Route = new List<int>();
 
     [SerializeField]
@@ -53,7 +53,7 @@ public class PlayerState : NetworkBehaviour
         isAnswering = false;
         isWaitingforQuestion = false;
         communicationWithId = NetworkInstanceId.Invalid.Value;
-		Enumerable.Range(0,4).OrderBy(r => UnityEngine.Random.value).ToList().ForEach(r => Route.Add(r));
+		Enumerable.Range(1,4).OrderBy(r => UnityEngine.Random.value).ToList().ForEach(r => Route.Add(r));
 	}
 
 	public override void OnStartClient() {
@@ -88,6 +88,11 @@ public class PlayerState : NetworkBehaviour
 			ServerLogic.ScoreBoardInstance = Instantiate(ScoreBoard);
         }
     }
+
+	public void ShowTeam(int t) {
+		this.Team = t;
+		GameObject.Find ("Notification").GetComponent<Notification> ().Notify ("You are in team " + (Team + 1),3000);
+	}
 
 	public void RemoveFirstRouteItem() {
 		Route.RemoveAt (0);

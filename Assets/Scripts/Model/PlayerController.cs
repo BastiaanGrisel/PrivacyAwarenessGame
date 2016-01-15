@@ -103,7 +103,7 @@ public class PlayerController : NetworkBehaviour
 		Debug.Log (points + " " + serverLogic.Players.Count (p => p.Team == Team));
 
 		if (serverLogic.Players.Count (p => p.Team == Team) == points) {
-			state.CmdBroadcastNotification ("Game Over! Team " + Team + " wins!", float.PositiveInfinity);
+			state.CmdBroadcastNotification ("Game Over! Team " + (Team+1) + " wins!", float.PositiveInfinity);
 			CmdEndGame ();
 		}
 	}
@@ -328,7 +328,7 @@ public class PlayerController : NetworkBehaviour
         if (this.gameObject.Equals(requester) && isLocalPlayer)
         {
             state.AddCollectedData(new KeyValuePair<ProfileAttribute, string>(attr, answer));
-            GameObject.Find("Notification").GetComponent<Notification>().Notify(questioned.GetComponent<PlayerState>().username + " has answerred your question about " + ProfileAttributeExt.ToFriendlyString(attr));
+            GameObject.Find("Notification").GetComponent<Notification>().Notify(questioned.GetComponent<PlayerState>().username + " has answered your question about " + ProfileAttributeExt.ToFriendlyString(attr));
         }
     }
 }

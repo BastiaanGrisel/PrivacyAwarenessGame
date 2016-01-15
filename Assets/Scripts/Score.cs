@@ -17,7 +17,7 @@ public class Score : NetworkBehaviour {
 	void SetScore(int t1, int t2) {
 		team1 = t1;
 		team2 = t2;
-		GetComponent<Text>().text = t1.ToString() + " - " + t2.ToString();
+		GetComponent<Text>().text = "Team 1: " + t1.ToString() + ", Team 2: " + t2.ToString();
 	}
 
 //	[Command]
