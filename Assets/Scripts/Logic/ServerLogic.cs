@@ -64,32 +64,39 @@ public class ServerLogic : NetworkBehaviour
 		int AttributesPerPlayer = 3;//(int) Math.Max (3, Math.Ceiling ((double) Profile.TotalNumberOfAttributes() / (double) Players.Count));
 
 		// Set the number of attributes in the game
-		int NumberOfAttributes = (int) Math.Max (Math.Floor (Players.Count / 2.0) * 3, 3);
+		int NumberOfAttributes = (int) Math.Max (Math.Floor (Players.Count / 2.0) * AttributesPerPlayer, AttributesPerPlayer);
 
 		// Generate a list of all the attributes in random order
 		List<ProfileAttribute> AllAttributes = Enum.GetValues(typeof(ProfileAttribute)).Cast<ProfileAttribute>()/*.OrderBy(a => UnityEngine.Random.value)*/.Take(NumberOfAttributes).ToList ();
-		List<ProfileAttribute> AttributesNotYetInGame = new List<ProfileAttribute> (AllAttributes);
+		List<ProfileAttribute> AttributesNotYetInGame;
 
-		for (int i = 0; i < Players.Count; i++)
-        {
-			Players[i].ProfileIndex = i;
+		// Divide teams
+		for (int i = 0; i < Players.Count; i++) 
+			Players [i].Team = i % 2;
 
-			for(int j = 0; j < AttributesPerPlayer; j++)
+		for (int i = 0; i < 2; i++) {
+			AttributesNotYetInGame = new List<ProfileAttribute> (AllAttributes);
+
+			for(int j = 0; j < Players.Count; j++)
             {
-				if(AttributesNotYetInGame.Any ()) {
-					// Add an attribute to the player (and to the players of the other players since SelectedAttributed is a SyncList)
-					Players[i].SelectedAttributes.Add ((int) AttributesNotYetInGame[0]);
-					// Delete it from the list of attributes that are not yet in the game
-					AttributesNotYetInGame.RemoveAt(0);
-				} else {
-					// Add a random attribute that that player does not already have
-					Players[i].SelectedAttributes.Add ((int) AllAttributes.Find(a => !Players[i].SelectedAttributes.Contains((int) a)));
+				if(Players[j].Team != i) continue;
+
+				Players[j].ProfileIndex = j;
+				
+				for(int nAttr = 0; nAttr < AttributesPerPlayer; nAttr++)
+				{
+					if(AttributesNotYetInGame.Any ()) {
+						// Add an attribute to the player (and to the players of the other players since SelectedAttributed is a SyncList)
+						Players[j].SelectedAttributes.Add ((int) AttributesNotYetInGame[0]);
+						// Delete it from the list of attributes that are not yet in the game
+						AttributesNotYetInGame.RemoveAt(0);
+					} else {
+						// Add a random attribute that that player does not already have
+						Players[j].SelectedAttributes.Add ((int) AllAttributes.Find(a => !Players[j].SelectedAttributes.Contains((int) a)));
+					}
 				}
 			}
-					
-			// Assign each player a team
-			Players[i].Team = i % 2;
-        }
+		}
 
 		// Initialize doors
 		foreach(GameObject d in GameObject.FindGameObjectsWithTag ("Door")) {
