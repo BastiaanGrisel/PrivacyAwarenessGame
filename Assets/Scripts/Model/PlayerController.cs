@@ -144,12 +144,19 @@ public class PlayerController : NetworkBehaviour
     {
         PlayerState player1State = player1.GetComponent<PlayerState>();
         PlayerState player2State = player2.GetComponent<PlayerState>();
-        if (!player1State.isQuestioning && !player1State.isAnswering && !player1State.isWaitingforQuestion && !player2State.isQuestioning && !player2State.isAnswering && !player2State.isWaitingforQuestion)
+        if (player1State.isQuestioning || player1State.isAnswering || player1State.isWaitingforQuestion || player2State.isQuestioning || player2State.isAnswering || player2State.isWaitingforQuestion)
+        {
+            RpcNotifyNoCommunication(player1, player2, player1State.isQuestioning, player1State.isAnswering, player1State.isWaitingforQuestion, player2State.isQuestioning, player2State.isAnswering, player2State.isWaitingforQuestion, player1State.communicationWithId, player2State.communicationWithId);
+            RpcNotifyNoCommunication(player2, player1, player2State.isQuestioning, player2State.isAnswering, player2State.isWaitingforQuestion, player1State.isQuestioning, player1State.isAnswering, player1State.isWaitingforQuestion, player2State.communicationWithId, player1State.communicationWithId);
+        }
+        else
         {
             player1State.isQuestioning = true;
             player1State.isWaitingforQuestion = true;
             player2State.isQuestioning = true;
             player2State.isWaitingforQuestion = true;
+            player1State.communicationWithId = player2State.netId.Value;
+            player2State.communicationWithId = player1State.netId.Value;
 
             RpcStartCommunication(player1, player2);
         }
@@ -168,7 +175,6 @@ public class PlayerController : NetworkBehaviour
         {
             PlayerState otherPlayerState = other.GetComponent<PlayerState>();
 
-            state.CmdCommunicationWithId(otherPlayerState.netId.Value);
             state.freeze = true;
 
             Transform panel = DataExchangeCanvas.transform.Find("DataExchangePanel");
@@ -201,6 +207,30 @@ public class PlayerController : NetworkBehaviour
             }
 
             DataExchangeCanvas.SetActive(true);
+        }
+    }
+
+    [ClientRpc]
+    void RpcNotifyNoCommunication(GameObject local, GameObject other, bool isQ, bool isA, bool isW, bool isQOther, bool isAOther, bool isWOther, uint ComId, uint ComIdOther)
+    {
+        if (isLocalPlayer && this.gameObject.Equals(local))
+        {
+            PlayerState otherPlayerState = other.GetComponent<PlayerState>();
+            if (!ComId.Equals(otherPlayerState.netId.Value))
+            {
+                if (isQ)
+                    GameObject.Find("Notification").GetComponent<Notification>().Notify("You first need to finish your question!");
+                else if (isQ)
+                    GameObject.Find("Notification").GetComponent<Notification>().Notify("You are waiting for a question!");
+                else if (isA)
+                    GameObject.Find("Notification").GetComponent<Notification>().Notify("You first need to answer the question!");
+                else if (isQOther)
+                    GameObject.Find("Notification").GetComponent<Notification>().Notify(otherPlayerState.username + " first needs to finish a question!");
+                else if (isQOther)
+                    GameObject.Find("Notification").GetComponent<Notification>().Notify(otherPlayerState.username + " is waiting for a question!");
+                else if (isAOther)
+                    GameObject.Find("Notification").GetComponent<Notification>().Notify(otherPlayerState.username + " first needs to answer a question!");
+            }
         }
     }
 
