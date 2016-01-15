@@ -14,7 +14,8 @@ public class Notification : MonoBehaviour
 
     public void Notify(string Message, float Duration = 1000)
     {
-        Notifications.Add(Message,Duration);
+		if(!Notifications.ContainsKey(Message))
+        	Notifications.Add(Message,Duration);
     }
 
     void Update()
