@@ -292,7 +292,7 @@ public class PlayerController : NetworkBehaviour
             {
                 GameObject logic = GameObject.Find("Game");
 
-                string data = logic.GetComponent<ServerLogic>().Profiles[rnd.Next() % logic.GetComponent<ServerLogic>().Profiles.Count - 1][(int)attr];
+                string data = logic.GetComponent<ServerLogic>().Profiles[rnd.Next() % (logic.GetComponent<ServerLogic>().Profiles.Count - 1)][(int)attr];
                 if(data == requesterPlayerState.GetProfile()[(int)attr])
                     data = logic.GetComponent<ServerLogic>().Profiles[logic.GetComponent<ServerLogic>().Profiles.Count - 1][(int)attr];
                 
