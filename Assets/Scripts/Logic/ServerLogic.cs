@@ -18,16 +18,25 @@ public class ServerLogic : NetworkBehaviour
     public void Awake()
     {
         // Initialize all the profiles.
-		Profiles.Add(new Profile(){"devries@smart.nl", "Stanislas College", "Gitaar Spelen", "B-Brave", "James Bond", "4567 GB", "Single", "Pizza", "Bobby", "Snackbar"});
-		Profiles.Add(new Profile(){"jongen34@school.nl", "Stedelijk Gymnasium", "Paard rijden", "Justin Bieber", "Star Wars", "7832 FD", "Getrouwd", "Nasi Goreng", "Rataplan", "Supermarkt"});
-		Profiles.Add(new Profile(){"concert@sea.net", "TU Delft", "Majorette", "OneDirection", "The Hobbit", "2374 AD", "In een relatie", "Hutspot", "Loebas", "Krantenwijk"});
-		Profiles.Add(new Profile(){"kees90@coolmail.com", "Hogeschool Inholland", "Boeken lezen", "K3", "SpangaS in Actie", "6709 KL", "Uit elkaar", "Pannenkoeken", "Bello", "Gras maaien"});
-		Profiles.Add(new Profile(){"sophie43@coolmail.com", "Engelbertcollege", "Voetballen", "Armin van Buren", "Finding Nemo", "1735 TR", "Ingewikkeld", "Patat", "Dexter", "Kledingwinkel"});
-		Profiles.Add(new Profile(){"ikbenhier123@home.nl", "De Regenboogschool", "Hockey", "Coldplay", "Pirates of the Caribbean", "5008 EP", "Verloofd", "Couscous", "Idefix", "Bakkerij"});
-		Profiles.Add(new Profile(){"hallodaar!@party.com", "CBS De Acker", "Tennis", "Adele", "Peter Pan", "8062 MW", "Gescheiden", "Chili con carne", "Nero", "Restaurant"});
-		Profiles.Add(new Profile(){"sophie43@coolmail.com", "Engelbertcollege", "Voetballen", "Armin van Buren", "Finding Nemo", "1735 TR", "Ingewikkeld", "Patat", "Dexter", "Kledingwinkel"});
-		Profiles.Add(new Profile(){"ikbenhier123@home.nl", "De Regenboogschool", "Hockey", "Coldplay", "Pirates of the Caribbean", "5008 EP", "Verloofd", "Couscous", "Idefix", "Bakkerij"});
-		Profiles.Add(new Profile(){"hallodaar!@party.com", "CBS De Acker", "Tennis", "Adele", "Peter Pan", "8062 MW", "Gescheiden", "Chili con carne", "Nero", "Restaurant"});
+		Profiles.Add(new Profile(){"johnsmith@smart.com", "Stanford University", "Playing Guitar", "Robbie Williams", "James Bond", "4567 GB", "Single", "Pizza", "Parrot", "Snackbar"});
+
+		Profiles.Add(new Profile(){"freddy34@school.com", "Waterloo University", "Fishing", "Justin Bieber", "Pirates of the Caribbean", "7832 FD", "Married", "Sushi", "Goldfish", "Elderly Assistance"});
+
+		Profiles.Add(new Profile(){"concert@sea.net", "TU Delft", "Orchestra", "One Direction", "The Hobbit", "2374 AD", "In Relationship", "Fish and Chips", "Platypus", "Paper Round"});
+
+		Profiles.Add(new Profile(){"hpotter@hogwarts.com", "Hogwarts University", "Reading", "K3", "Harry Potter", "6709 KL", "In Love", "Pancakes", "Owl", "Cleaning"});
+
+        Profiles.Add(new Profile(){"sophie43@coolmail.com", "Engelbert College", "Cricket", "Armin van Buren", "Fast and the Furious", "1735 TR", "It's Complicated..", "Fries", "Cat", "Supermarket"});
+
+        Profiles.Add(new Profile(){"iamhere123@home.com", "Harverd University", "Hockey", "The Beatles", "Guardians of the Galaxy", "5008 EP", "Engaged", "Couscous", "Dog", "ICT"});
+
+        Profiles.Add(new Profile(){"bobby@hotmail.com", "Open University", "Tennis", "The Fray", "Saving Private Ryan", "8062 MW", "Distance Relationship", "Chili Con Carne", "Guinea Pig", "Tomato Picker"});
+
+        Profiles.Add(new Profile(){"sophie43@coolmail.com", "LUC The Hague", "Football", "The Rolling Stones", "Finding Nemo", "1735 TR", "Not Interested", "Pasta", "Stick Insects", "Clothing Store"});
+
+        Profiles.Add(new Profile(){"achmed.p@school.com", "ROC Groningen", "Water Polo", "Coldplay", "Star Wars", "5008 EP", "Engaged", "Spaghetti", "Snake", "Bakery"});
+
+        Profiles.Add(new Profile(){"heythere@party.com", "The Rainbow", "Volleybal", "Adele", "Peter Pan", "8062 MW", "Gescheiden", "Kebab", "Mouse", "Restaurant"});
 
 		Players = new List<PlayerState> ();
     }
