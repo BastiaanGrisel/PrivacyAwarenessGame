@@ -272,7 +272,7 @@ public class PlayerController : NetworkBehaviour
             string answerTruth = profile[(int)attr];
             GameObject truthButton = Instantiate(ButtonPrefab) as GameObject;
             //Debug.Log(questioned.GetComponent<PlayerState>().ProfileIndex + "|" + questioned.GetComponent<PlayerState>().username + "|" + "Waarheid (" + ProfileAttributeExt.ToFriendlyString(attr) + "=" + answerTruth + ")");
-            truthButton.transform.Find("Text").GetComponent<Text>().text = "Waarheid (" + ProfileAttributeExt.ToFriendlyString(attr) + "=" + answerTruth + ")";
+            truthButton.transform.Find("Text").GetComponent<Text>().text = "Truth";
             truthButton.transform.SetParent(AnswerPanel);
             Button tButton = truthButton.GetComponent<Button>();
             tButton.onClick.AddListener(() =>
@@ -285,7 +285,7 @@ public class PlayerController : NetworkBehaviour
             });
 
             GameObject lieButton = Instantiate(ButtonPrefab) as GameObject;
-            lieButton.transform.Find("Text").GetComponent<Text>().text = "Leugen";
+            lieButton.transform.Find("Text").GetComponent<Text>().text = "Lie";
             lieButton.transform.SetParent(AnswerPanel);
             Button lButton = lieButton.GetComponent<Button>();
             lButton.onClick.AddListener(() =>
